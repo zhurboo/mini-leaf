@@ -4,10 +4,11 @@ from baseline_constants import BYTES_WRITTEN_KEY, BYTES_READ_KEY, LOCAL_COMPUTAT
 
 class Server:
     
-    def __init__(self, client_model):
+    def __init__(self, client_model, clients=[]):
         self.client_model = client_model
         self.model = client_model.get_params()
         self.selected_clients = []
+        self.all_clients = clients
         self.updates = []
 
     def select_clients(self, my_round, possible_clients, num_clients=20):
@@ -63,17 +64,25 @@ class Server:
             sys_metrics[c.id][BYTES_WRITTEN_KEY] += c.model.size
             sys_metrics[c.id][LOCAL_COMPUTATIONS_KEY] = comp
 
-            self.updates.append((num_samples, update))
+            self.updates.append((c.id, num_samples, update))
 
         return sys_metrics
 
     def update_model(self):
+        used_client_ids = [cid for (cid, client_samples, client_model) in self.updates]
         total_weight = 0.
-        base = [0] * len(self.updates[0][1])
-        for (client_samples, client_model) in self.updates:
+        base = [0] * len(self.updates[0][2])
+        for (cid, client_samples, client_model) in self.updates:
             total_weight += client_samples
             for i, v in enumerate(client_model):
                 base[i] += (client_samples * v.astype(np.float64))
+        for c in self.all_clients:
+            if c.id not in used_client_ids:
+                # c was not trained in this round
+                params = c.model.get_params()
+                total_weight += c.num_train_samples  # assume that all train_data is used to update
+                for i, v in enumerate(params):
+                    base[i] += (c.num_train_samples * v.astype(np.float64))
         averaged_soln = [v / total_weight for v in base]
 
         self.model = averaged_soln
@@ -109,7 +118,7 @@ class Server:
             clients: list of Client objects.
         """
         if clients is None:
-            clients = self.selected_clients
+            clients = self.all_clients
 
         ids = [c.id for c in clients]
         groups = {c.id: c.group for c in clients}

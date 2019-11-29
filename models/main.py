@@ -56,14 +56,16 @@ def main():
 
     # Create client model, and share params with server model
     tf.reset_default_graph()
-    client_model = ClientModel(args.seed, *model_params)
-
-    # Create server
-    server = Server(client_model)
+    client_model = ClientModel(args.seed, *model_params, args.gpu_fraction)
 
     # Create clients
     clients = setup_clients(args.dataset, client_model)
+
+    # Create server
+    server = Server(client_model, clients)
+    
     client_ids, client_groups, client_num_samples = server.get_clients_info(clients)
+    
     print('Clients in Total: %d' % (len(clients)))
 
     # Initial status
@@ -74,6 +76,7 @@ def main():
 
     # Simulate training
     for i in range(num_rounds):
+        round_start_time = time.time()
         print('--- Round %d of %d: Training %d Clients ---' % (i + 1, num_rounds, clients_per_round))
 
         # Select clients to train this round
@@ -91,6 +94,7 @@ def main():
         if (i + 1) % eval_every == 0 or (i + 1) == num_rounds:
             print("selected client_ids:", c_ids)
             print_stats(i + 1, server, clients, client_num_samples, args, stat_writer_fn)
+        print("round {} used {} seconds".format(i+1, time.time()-round_start_time))
     
     # Save server model
     ckpt_path = os.path.join('checkpoints', args.dataset)
@@ -188,4 +192,7 @@ def print_metrics(metrics, weights, prefix=''):
 
 
 if __name__ == '__main__':
+    # python main.py -dataset shakespeare -model stacked_lstm
+    start_time=time.time()
     main()
+    print("used time = {}s".format(time.time() - start_time))

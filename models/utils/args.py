@@ -67,5 +67,10 @@ def parse_args():
                     type=float,
                     default=-1,
                     required=False)
+    parser.add_argument("-gpu_fraction", 
+                        help="per process gpu memory fraction", 
+                        type=float,
+                        default=0.2,
+                        required=False)
 
     return parser.parse_args()
