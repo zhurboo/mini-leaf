@@ -14,7 +14,9 @@ from utils.tf_utils import graph_size
 
 class Model(ABC):
 
+
     def __init__(self, seed, lr, optimizer=None, gpu_fraction=0.2):
+
         self.lr = lr
         self._optimizer = optimizer
 

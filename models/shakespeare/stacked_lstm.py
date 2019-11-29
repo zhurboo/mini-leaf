@@ -15,6 +15,7 @@ class ClientModel(Model):
         self.n_hidden = n_hidden
         super(ClientModel, self).__init__(seed, lr, gpu_fraction=gpu_fraction)
 
+
     def create_model(self):
         features = tf.placeholder(tf.int32, [None, self.seq_len])
         embedding = tf.get_variable("embedding", [self.num_classes, 8])
