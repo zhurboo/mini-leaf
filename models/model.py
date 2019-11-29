@@ -14,7 +14,7 @@ from utils.tf_utils import graph_size
 
 class Model(ABC):
 
-    def __init__(self, seed, lr, optimizer=None):
+    def __init__(self, seed, lr, optimizer=None, useGPU=False):
         self.lr = lr
         self._optimizer = optimizer
 
@@ -23,7 +23,7 @@ class Model(ABC):
             tf.set_random_seed(123 + seed)
             self.features, self.labels, self.train_op, self.eval_metric_ops, self.loss = self.create_model()
             self.saver = tf.train.Saver()
-        self.sess = tf.Session(graph=self.graph)
+        self.sess = tf.Session(graph=self.graph, config=tf.ConfigProto(log_device_placement=useGPU))
 
         self.size = graph_size(self.graph)
 

@@ -56,7 +56,7 @@ def main():
 
     # Create client model, and share params with server model
     tf.reset_default_graph()
-    client_model = ClientModel(args.seed, *model_params)
+    client_model = ClientModel(args.seed, *model_params, args.gpu)
 
     # Create server
     server = Server(client_model)
@@ -188,4 +188,7 @@ def print_metrics(metrics, weights, prefix=''):
 
 
 if __name__ == '__main__':
+    # python main.py -dataset shakespeare -model stacked_lstm
+    start_time=time.time()
     main()
+    print("used time = {}s".format(time.time() - start_time))

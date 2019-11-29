@@ -67,5 +67,8 @@ def parse_args():
                     type=float,
                     default=-1,
                     required=False)
+    parser.add_argument("-gpu", 
+                        help="use gpu to train", 
+                        action="store_true")
 
     return parser.parse_args()
