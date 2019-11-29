@@ -14,7 +14,7 @@ MAIN_PARAMS = {
     'shakespeare': {
         'small': (6, 2, 2),
         'medium': (8, 2, 2),
-        'large': (20, 1, 2)
+        'large': (2, 1, 2)  # (20, 1, 2)
         },
     'celeba': {
         'small': (30, 10, 2),

@@ -5,6 +5,7 @@ import numpy as np
 import os
 import sys
 import random
+import time
 import tensorflow as tf
 
 import metrics.writer as metrics_writer
@@ -21,7 +22,7 @@ STAT_METRICS_PATH = 'metrics/stat_metrics.csv'
 SYS_METRICS_PATH = 'metrics/sys_metrics.csv'
 
 def main():
-
+    
     args = parse_args()
 
     # Set the random seed if provided (affects client sampling, and batching)
@@ -63,7 +64,7 @@ def main():
     # Create clients
     clients = setup_clients(args.dataset, client_model)
     client_ids, client_groups, client_num_samples = server.get_clients_info(clients)
-    print('Clients in Total: %d' % len(clients))
+    print('Clients in Total: %d' % (len(clients)))
 
     # Initial status
     print('--- Random Initialization ---')
@@ -88,6 +89,7 @@ def main():
 
         # Test model
         if (i + 1) % eval_every == 0 or (i + 1) == num_rounds:
+            print("selected client_ids:", c_ids)
             print_stats(i + 1, server, clients, client_num_samples, args, stat_writer_fn)
     
     # Save server model
@@ -167,17 +169,22 @@ def print_metrics(metrics, weights, prefix=''):
         weights: dict with client ids as keys. Each entry is the weight
             for that client.
     """
-    ordered_weights = [weights[c] for c in sorted(weights)]
+    client_ids = [c for c in sorted(weights)]
+    ordered_weights = [weights[c] for c in client_ids]
     metric_names = metrics_writer.get_metrics_names(metrics)
     to_ret = None
     for metric in metric_names:
-        ordered_metric = [metrics[c][metric] for c in sorted(metrics)]
+        ordered_metric = [metrics[c][metric] for c in client_ids]
         print('%s: %g, 10th percentile: %g, 50th percentile: %g, 90th percentile %g' \
               % (prefix + metric,
                  np.average(ordered_metric, weights=ordered_weights),
                  np.percentile(ordered_metric, 10),
                  np.percentile(ordered_metric, 50),
                  np.percentile(ordered_metric, 90)))
+        # print(prefix + metric)
+        # for i in range(len(client_ids)):
+        #     print("client_id = {}, weight = {}, {} = {}".format(client_ids[i], ordered_weights[i], prefix + metric, ordered_metric[i]))
+        # print('total: {} = {}'.format(prefix + metric, np.average(ordered_metric, weights=ordered_weights)))
 
 
 if __name__ == '__main__':

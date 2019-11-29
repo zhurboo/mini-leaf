@@ -1,0 +1,142 @@
+WARNING:tensorflow:From main.py:31: The name tf.set_random_seed is deprecated. Please use tf.compat.v1.set_random_seed instead.
+
+WARNING:tensorflow:From main.py:48: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+
+WARNING:tensorflow:From main.py:48: The name tf.logging.WARN is deprecated. Please use tf.compat.v1.logging.WARN instead.
+
+WARNING:tensorflow:From main.py:58: The name tf.reset_default_graph is deprecated. Please use tf.compat.v1.reset_default_graph instead.
+
+WARNING:tensorflow:From /home/ubuntu/leaf/models/shakespeare/stacked_lstm.py:19: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
+
+WARNING:tensorflow:From /home/ubuntu/leaf/models/shakespeare/stacked_lstm.py:20: The name tf.get_variable is deprecated. Please use tf.compat.v1.get_variable instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/tensorflow_p36/lib/python3.6/site-packages/tensorflow/python/ops/init_ops.py:1251: calling VarianceScaling.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:From /home/ubuntu/leaf/models/shakespeare/stacked_lstm.py:25: BasicLSTMCell.__init__ (from tensorflow.python.ops.rnn_cell_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+This class is equivalent as tf.keras.layers.LSTMCell, and will be replaced by that in Tensorflow 2.0.
+WARNING:tensorflow:From /home/ubuntu/leaf/models/shakespeare/stacked_lstm.py:25: MultiRNNCell.__init__ (from tensorflow.python.ops.rnn_cell_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+This class is equivalent as tf.keras.layers.StackedRNNCells, and will be replaced by that in Tensorflow 2.0.
+WARNING:tensorflow:From /home/ubuntu/leaf/models/shakespeare/stacked_lstm.py:26: dynamic_rnn (from tensorflow.python.ops.rnn) is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `keras.layers.RNN(cell)`, which is equivalent to this API
+WARNING:tensorflow:Entity <bound method MultiRNNCell.call of <tensorflow.python.ops.rnn_cell_impl.MultiRNNCell object at 0x7f985e535748>> could not be transformed and will be executed as-is. Please report this to the AutgoGraph team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output. Cause: converting <bound method MultiRNNCell.call of <tensorflow.python.ops.rnn_cell_impl.MultiRNNCell object at 0x7f985e535748>>: AttributeError: module 'gast' has no attribute 'Num'
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/tensorflow_p36/lib/python3.6/site-packages/tensorflow/python/ops/rnn_cell_impl.py:738: calling Zeros.__init__ (from tensorflow.python.ops.init_ops) with dtype is deprecated and will be removed in a future version.
+Instructions for updating:
+Call initializer instance with the dtype argument instead of passing it to the constructor
+WARNING:tensorflow:Entity <bound method BasicLSTMCell.call of <tensorflow.python.ops.rnn_cell_impl.BasicLSTMCell object at 0x7f985e535ef0>> could not be transformed and will be executed as-is. Please report this to the AutgoGraph team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output. Cause: converting <bound method BasicLSTMCell.call of <tensorflow.python.ops.rnn_cell_impl.BasicLSTMCell object at 0x7f985e535ef0>>: AssertionError: Bad argument number for Name: 3, expecting 4
+WARNING:tensorflow:Entity <bound method BasicLSTMCell.call of <tensorflow.python.ops.rnn_cell_impl.BasicLSTMCell object at 0x7f985e535630>> could not be transformed and will be executed as-is. Please report this to the AutgoGraph team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output. Cause: converting <bound method BasicLSTMCell.call of <tensorflow.python.ops.rnn_cell_impl.BasicLSTMCell object at 0x7f985e535630>>: AssertionError: Bad argument number for Name: 3, expecting 4
+WARNING:tensorflow:From /home/ubuntu/leaf/models/shakespeare/stacked_lstm.py:27: dense (from tensorflow.python.layers.core) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.dense instead.
+WARNING:tensorflow:Entity <bound method Dense.call of <tensorflow.python.layers.core.Dense object at 0x7f985e535668>> could not be transformed and will be executed as-is. Please report this to the AutgoGraph team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output. Cause: converting <bound method Dense.call of <tensorflow.python.layers.core.Dense object at 0x7f985e535668>>: AssertionError: Bad argument number for Name: 3, expecting 4
+WARNING:tensorflow:From /home/ubuntu/leaf/models/model.py:52: The name tf.train.GradientDescentOptimizer is deprecated. Please use tf.compat.v1.train.GradientDescentOptimizer instead.
+
+WARNING:tensorflow:From /home/ubuntu/leaf/models/shakespeare/stacked_lstm.py:33: The name tf.train.get_global_step is deprecated. Please use tf.compat.v1.train.get_global_step instead.
+
+WARNING:tensorflow:From /home/ubuntu/leaf/models/model.py:25: The name tf.train.Saver is deprecated. Please use tf.compat.v1.train.Saver instead.
+
+WARNING:tensorflow:From /home/ubuntu/leaf/models/model.py:26: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+WARNING:tensorflow:From /home/ubuntu/leaf/models/model.py:34: The name tf.profiler.ProfileOptionBuilder is deprecated. Please use tf.compat.v1.profiler.ProfileOptionBuilder instead.
+
+WARNING:tensorflow:From /home/ubuntu/leaf/models/model.py:35: The name tf.profiler.profile is deprecated. Please use tf.compat.v1.profiler.profile instead.
+
+WARNING:tensorflow:From /home/ubuntu/anaconda3/envs/tensorflow_p36/lib/python3.6/site-packages/tensorflow/python/profiler/internal/flops_registry.py:142: tensor_shape_from_node_def_name (from tensorflow.python.framework.graph_util_impl) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.compat.v1.graph_util.tensor_shape_from_node_def_name`
+Incomplete shape.
+Incomplete shape.
+Incomplete shape.
+Incomplete shape.
+Parsing Inputs...
+
+=========================Options=============================
+-max_depth                  10000
+-min_bytes                  0
+-min_peak_bytes             0
+-min_residual_bytes         0
+-min_output_bytes           0
+-min_micros                 0
+-min_accelerator_micros     0
+-min_cpu_micros             0
+-min_params                 0
+-min_float_ops              1
+-min_occurrence             0
+-step                       -1
+-order_by                   float_ops
+-account_type_regexes       .*
+-start_name_regexes         .*
+-trim_name_regexes          
+-show_name_regexes          .*
+-hide_name_regexes          
+-account_displayed_op_only  true
+-select                     float_ops
+-output                     stdout:
+
+==================Model Analysis Report======================
+
+Doc:
+scope: The nodes in the model graph are organized by their names, which is hierarchical like filesystem.
+flops: Number of float operations. Note: Please read the implementation for the math behind it.
+
+Profile:
+node name | # float_ops
+_TFProfRoot (--/2.43m flops)
+  rnn/multi_rnn_cell/cell_1/basic_lstm_cell/kernel/Initializer/random_uniform (524.29k/1.05m flops)
+    rnn/multi_rnn_cell/cell_1/basic_lstm_cell/kernel/Initializer/random_uniform/mul (524.29k/524.29k flops)
+    rnn/multi_rnn_cell/cell_1/basic_lstm_cell/kernel/Initializer/random_uniform/sub (1/1 flops)
+  rnn/multi_rnn_cell/cell_0/basic_lstm_cell/kernel/Initializer/random_uniform (270.34k/540.67k flops)
+    rnn/multi_rnn_cell/cell_0/basic_lstm_cell/kernel/Initializer/random_uniform/mul (270.34k/270.34k flops)
+    rnn/multi_rnn_cell/cell_0/basic_lstm_cell/kernel/Initializer/random_uniform/sub (1/1 flops)
+  gradients/rnn/while/rnn/multi_rnn_cell/cell_1/basic_lstm_cell/MatMul/Enter_grad/Add (524.29k/524.29k flops)
+  gradients/rnn/while/rnn/multi_rnn_cell/cell_0/basic_lstm_cell/MatMul/Enter_grad/Add (270.34k/270.34k flops)
+  dense/kernel/Initializer/random_uniform (20.48k/40.96k flops)
+    dense/kernel/Initializer/random_uniform/mul (20.48k/20.48k flops)
+    dense/kernel/Initializer/random_uniform/sub (1/1 flops)
+  embedding/Initializer/random_uniform (640/1.28k flops)
+    embedding/Initializer/random_uniform/mul (640/640 flops)
+    embedding/Initializer/random_uniform/sub (1/1 flops)
+  gradients/rnn/while/rnn/multi_rnn_cell/cell_0/basic_lstm_cell/BiasAdd/Enter_grad/Add (1.02k/1.02k flops)
+  gradients/rnn/while/rnn/multi_rnn_cell/cell_1/basic_lstm_cell/BiasAdd/Enter_grad/Add (1.02k/1.02k flops)
+  softmax_cross_entropy_with_logits/Sub_2 (1/1 flops)
+  softmax_cross_entropy_with_logits/Sub_1 (1/1 flops)
+  softmax_cross_entropy_with_logits/Sub (1/1 flops)
+  rnn/while/add_1 (1/1 flops)
+  rnn/while/add (1/1 flops)
+  rnn/while/Less_1 (1/1 flops)
+  rnn/while/Less (1/1 flops)
+  rnn/Minimum (1/1 flops)
+  rnn/Maximum (1/1 flops)
+  gradients/rnn/while/TensorArrayReadV3/Enter_1_grad/Add (1/1 flops)
+  gradients/Sub (1/1 flops)
+  gradients/Mean_grad/Maximum (1/1 flops)
+  gradients/GreaterEqual (1/1 flops)
+  gradients/Add (1/1 flops)
+
+======================End of Report==========================
+WARNING:tensorflow:From /home/ubuntu/leaf/models/model.py:41: Variable.load (from tensorflow.python.ops.variables) is deprecated and will be removed in a future version.
+Instructions for updating:
+Prefer Variable.assign which has equivalent behavior in 2.X.
+############################## shakespeare.stacked_lstm ##############################
+Clients in Total: 244
+--- Random Initialization ---
+train_accuracy: 0.000486534, 10th percentile: 0, 50th percentile: 0, 90th percentile 0.00131533
+train_loss: 4.38324, 10th percentile: 4.38284, 50th percentile: 4.38323, 90th percentile 4.38366
+test_accuracy: 0.000436972, 10th percentile: 0, 50th percentile: 0, 90th percentile 0.000398198
+test_loss: 4.38323, 10th percentile: 4.38221, 50th percentile: 4.38326, 90th percentile 4.38405
+--- Round 1 of 2: Training 2 Clients ---
+selected client_ids: ['THE_COMEDY_OF_ERRORS_AEGEON', 'SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER']
+train_accuracy: 0.187401, 10th percentile: 0.170654, 50th percentile: 0.186032, 90th percentile 0.199787
+train_loss: 4.3503, 10th percentile: 4.34886, 50th percentile: 4.35045, 90th percentile 4.35223
+test_accuracy: 0.188373, 10th percentile: 0.117121, 50th percentile: 0.187813, 90th percentile 0.258923
+test_loss: 4.3502, 10th percentile: 4.34371, 50th percentile: 4.34991, 90th percentile 4.35703
+--- Round 2 of 2: Training 2 Clients ---
+selected client_ids: ['THE_COMEDY_OF_ERRORS_BALTHAZAR', 'TWELFTH_NIGHT__OR__WHAT_YOU_WILL_SECOND_OFFICER']
+train_accuracy: 0.187401, 10th percentile: 0.170654, 50th percentile: 0.186032, 90th percentile 0.199787
+train_loss: 4.3442, 10th percentile: 4.34245, 50th percentile: 4.34438, 90th percentile 4.3465
+test_accuracy: 0.188373, 10th percentile: 0.117121, 50th percentile: 0.187813, 90th percentile 0.258923
+test_loss: 4.34409, 10th percentile: 4.33642, 50th percentile: 4.34376, 90th percentile 4.35207
+Model saved in path: checkpoints/shakespeare/stacked_lstm.ckpt
