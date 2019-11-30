@@ -17,6 +17,8 @@ from model import ServerModel
 
 from utils.args import parse_args
 from utils.model_utils import read_data
+from utils.logging import Logger
+from utils.config import Config
 
 STAT_METRICS_PATH = 'metrics/stat_metrics.csv'
 SYS_METRICS_PATH = 'metrics/sys_metrics.csv'
@@ -24,84 +26,110 @@ SYS_METRICS_PATH = 'metrics/sys_metrics.csv'
 def main():
     
     args = parse_args()
+    
+    config_name = args.config_file
+    while config_name[-4:] == '.cfg':
+        config_name = config_name[:-4]
+    
+    # logger
+    L = Logger()
+    L.set_log_name(config_name)
+    logger = L.get_logger()
+    
+    # read config from file
+    cfg = Config()
 
     # Set the random seed if provided (affects client sampling, and batching)
-    random.seed(1 + args.seed)
-    np.random.seed(12 + args.seed)
-    tf.set_random_seed(123 + args.seed)
+    random.seed(1 + cfg.seed)
+    np.random.seed(12 + cfg.seed)
+    tf.compat.v1.set_random_seed(123 + cfg.seed)
 
-    model_path = '%s/%s.py' % (args.dataset, args.model)
+    model_path = '%s/%s.py' % (cfg.dataset, cfg.model)
     if not os.path.exists(model_path):
-        print('Please specify a valid dataset and a valid model.')
-    model_path = '%s.%s' % (args.dataset, args.model)
+        logger.error('Please specify a valid dataset and a valid model.')
+        assert False
+    model_path = '%s.%s' % (cfg.dataset, cfg.model)
     
-    print('############################## %s ##############################' % model_path)
+    logger.info('############################## %s ##############################' % model_path)
     mod = importlib.import_module(model_path)
     ClientModel = getattr(mod, 'ClientModel')
 
+    '''
     tup = MAIN_PARAMS[args.dataset][args.t]
     num_rounds = args.num_rounds if args.num_rounds != -1 else tup[0]
     eval_every = args.eval_every if args.eval_every != -1 else tup[1]
     clients_per_round = args.clients_per_round if args.clients_per_round != -1 else tup[2]
-
+    '''
+    
+    num_rounds = cfg.num_rounds
+    eval_every = cfg.eval_every
+    clients_per_round = cfg.clients_per_round
+    
     # Suppress tf warnings
-    tf.logging.set_verbosity(tf.logging.WARN)
+    tf.logging.set_verbosity(tf.logging.ERROR)
 
     # Create 2 models
     model_params = MODEL_PARAMS[model_path]
-    if args.lr != -1:
+    if cfg.lr != -1:
         model_params_list = list(model_params)
-        model_params_list[0] = args.lr
+        model_params_list[0] = cfg.lr
         model_params = tuple(model_params_list)
 
     # Create client model, and share params with server model
     tf.reset_default_graph()
-    client_model = ClientModel(args.seed, *model_params, args.gpu_fraction)
+    client_model = ClientModel(cfg.seed, *model_params, cfg.gpu_fraction)
 
     # Create clients
-    clients = setup_clients(args.dataset, client_model)
+    clients = setup_clients(cfg.dataset, client_model)
 
     # Create server
     server = Server(client_model, clients)
     
     client_ids, client_groups, client_num_samples = server.get_clients_info(clients)
     
-    print('Clients in Total: %d' % (len(clients)))
+    logger.info('Clients in Total: %d' % (len(clients)))
 
     # Initial status
-    print('--- Random Initialization ---')
+    logger.info('--- Random Initialization ---')
     stat_writer_fn = get_stat_writer_function(client_ids, client_groups, client_num_samples, args)
     sys_writer_fn = get_sys_writer_function(args)
     print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
 
     # Simulate training
+    if num_rounds == -1:
+        import sys
+        num_rounds = sys.maxsize
     for i in range(num_rounds):
         round_start_time = time.time()
-        print('--- Round %d of %d: Training %d Clients ---' % (i + 1, num_rounds, clients_per_round))
+        logger.info('--- Round %d of %d: Training %d Clients ---' % (i + 1, num_rounds, clients_per_round))
 
         # Select clients to train this round
         server.select_clients(i, online(clients), num_clients=clients_per_round)
         c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
-
+        logger.info("selected client_ids:", c_ids)
+        
         # Simulate server model training on selected clients' data
-        sys_metrics = server.train_model(num_epochs=args.num_epochs, batch_size=args.batch_size, minibatch=args.minibatch)
+        sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch)
         sys_writer_fn(i + 1, c_ids, sys_metrics, c_groups, c_num_samples)
         
         # Update server model
         server.update_model()
 
+        logger.info("round {} used {} seconds".format(i+1, time.time()-round_start_time))
+        
         # Test model
+        if eval_every == -1:
+            continue
         if (i + 1) % eval_every == 0 or (i + 1) == num_rounds:
-            print("selected client_ids:", c_ids)
             print_stats(i + 1, server, clients, client_num_samples, args, stat_writer_fn)
-        print("round {} used {} seconds".format(i+1, time.time()-round_start_time))
+        
     
     # Save server model
-    ckpt_path = os.path.join('checkpoints', args.dataset)
+    ckpt_path = os.path.join('checkpoints', cfg.dataset)
     if not os.path.exists(ckpt_path):
         os.makedirs(ckpt_path)
-    save_path = server.save_model(os.path.join(ckpt_path, '{}.ckpt'.format(args.model)))
-    print('Model saved in path: %s' % save_path)
+    save_path = server.save_model(os.path.join(ckpt_path, '{}.ckpt'.format(cfg.model)))
+    logger.info('Model saved in path: %s' % save_path)
 
     # Close models
     server.close_model()
@@ -177,9 +205,11 @@ def print_metrics(metrics, weights, prefix=''):
     ordered_weights = [weights[c] for c in client_ids]
     metric_names = metrics_writer.get_metrics_names(metrics)
     to_ret = None
+    L = Logger()
+    logger = L.get_logger()
     for metric in metric_names:
         ordered_metric = [metrics[c][metric] for c in client_ids]
-        print('%s: %g, 10th percentile: %g, 50th percentile: %g, 90th percentile %g' \
+        logger.info('%s: %g, 10th percentile: %g, 50th percentile: %g, 90th percentile %g' \
               % (prefix + metric,
                  np.average(ordered_metric, weights=ordered_weights),
                  np.percentile(ordered_metric, 10),
@@ -195,4 +225,4 @@ if __name__ == '__main__':
     # python main.py -dataset shakespeare -model stacked_lstm
     start_time=time.time()
     main()
-    print("used time = {}s".format(time.time() - start_time))
+    # logger.info("used time = {}s".format(time.time() - start_time))

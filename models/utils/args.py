@@ -5,16 +5,26 @@ from .constants import DATASETS, SIM_TIMES
 
 def parse_args():
     parser = argparse.ArgumentParser()
-
+    
+    parser.add_argument('-config_file',
+                    help='path to config file;',
+                    type=str,
+                    # required=True,
+                    default='default.cfg')
+    
+    # move to config
+    '''
     parser.add_argument('-dataset',
                     help='name of dataset;',
                     type=str,
                     choices=DATASETS,
-                    required=True)
+                    # required=True,
+                    default='shakespeare')
     parser.add_argument('-model',
                     help='name of model;',
                     type=str,
-                    required=True)
+                    # required=True,
+                    default='stacked_lstm')
     parser.add_argument('--num-rounds',
                     help='number of rounds to simulate;',
                     type=int,
@@ -35,6 +45,7 @@ def parse_args():
                     help='seed for random client sampling and batch splitting',
                     type=int,
                     default=0)
+    '''
     parser.add_argument('--metrics-name', 
                     help='name for metrics file;',
                     type=str,
@@ -45,6 +56,7 @@ def parse_args():
                     type=str,
                     default='metrics',
                     required=False)
+    
 
     # Minibatch doesn't support num_epochs, so make them mutually exclusive
     epoch_capability_group = parser.add_mutually_exclusive_group()
@@ -52,6 +64,7 @@ def parse_args():
                     help='None for FedAvg, else fraction;',
                     type=float,
                     default=None)
+    # num epochs will be determined by config file
     epoch_capability_group.add_argument('--num-epochs',
                     help='number of epochs when clients train on data;',
                     type=int,
@@ -62,6 +75,8 @@ def parse_args():
                     type=str,
                     choices=SIM_TIMES,
                     default='large')
+    # move to config
+    '''
     parser.add_argument('-lr',
                     help='learning rate for local optimizers;',
                     type=float,
@@ -72,5 +87,6 @@ def parse_args():
                         type=float,
                         default=0.2,
                         required=False)
+    '''
 
     return parser.parse_args()
