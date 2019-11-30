@@ -21,6 +21,7 @@ class Config():
         self.metrics_file = 'metrics'
         self.num_epochs = 1
         self.gpu_fraction = 0.2
+        self.minibatch = None       # always None for FedAvg
         
         logger.info('read config from {}'.format(config_file))
         self.read_config(config_file)

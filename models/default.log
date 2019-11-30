@@ -1,23 +1,24 @@
-2019-11-30 12:33:44,772 - FL-type - INFO - logger init finied ---- log file: default.log
-2019-11-30 12:33:44,773 - FL-type - INFO - read config from default.cfg
-2019-11-30 12:33:44,774 - FL-type - INFO - ================= Config =================
-2019-11-30 12:33:44,774 - FL-type - INFO - 	dataset = shakespeare
-2019-11-30 12:33:44,774 - FL-type - INFO - 	model = stacked_lstm
-2019-11-30 12:33:44,774 - FL-type - INFO - 	num_rounds = -1
-2019-11-30 12:33:44,774 - FL-type - INFO - 	lr = 0.1
-2019-11-30 12:33:44,774 - FL-type - INFO - 	eval_every = 3
-2019-11-30 12:33:44,774 - FL-type - INFO - 	clients_per_round = 5
-2019-11-30 12:33:44,774 - FL-type - INFO - 	batch_size = 10
-2019-11-30 12:33:44,775 - FL-type - INFO - 	seed = 0
-2019-11-30 12:33:44,775 - FL-type - INFO - 	metrics_file = metrics
-2019-11-30 12:33:44,775 - FL-type - INFO - 	num_epochs = 1
-2019-11-30 12:33:44,775 - FL-type - INFO - 	gpu_fraction = 0.2
-2019-11-30 12:33:44,775 - FL-type - INFO - ================= ====== =================
-2019-11-30 12:33:44,791 - FL-type - INFO - ############################## shakespeare.stacked_lstm ##############################
-2019-11-30 12:33:45,350 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
-2019-11-30 12:33:45,665 - tensorflow - WARNING - From main.py:69: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+2019-11-30 12:39:31,783 - FL-type - INFO - logger init finied ---- log file: default.log
+2019-11-30 12:39:31,784 - FL-type - INFO - read config from default.cfg
+2019-11-30 12:39:31,784 - FL-type - INFO - ================= Config =================
+2019-11-30 12:39:31,784 - FL-type - INFO - 	dataset = shakespeare
+2019-11-30 12:39:31,785 - FL-type - INFO - 	model = stacked_lstm
+2019-11-30 12:39:31,785 - FL-type - INFO - 	num_rounds = -1
+2019-11-30 12:39:31,785 - FL-type - INFO - 	lr = 0.1
+2019-11-30 12:39:31,785 - FL-type - INFO - 	eval_every = 3
+2019-11-30 12:39:31,785 - FL-type - INFO - 	clients_per_round = 5
+2019-11-30 12:39:31,785 - FL-type - INFO - 	batch_size = 10
+2019-11-30 12:39:31,785 - FL-type - INFO - 	seed = 0
+2019-11-30 12:39:31,785 - FL-type - INFO - 	metrics_file = metrics
+2019-11-30 12:39:31,785 - FL-type - INFO - 	num_epochs = 1
+2019-11-30 12:39:31,785 - FL-type - INFO - 	gpu_fraction = 0.2
+2019-11-30 12:39:31,785 - FL-type - INFO - 	minibatch = None
+2019-11-30 12:39:31,785 - FL-type - INFO - ================= ====== =================
+2019-11-30 12:39:31,800 - FL-type - INFO - ############################## shakespeare.stacked_lstm ##############################
+2019-11-30 12:39:32,373 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
+2019-11-30 12:39:32,689 - tensorflow - WARNING - From main.py:69: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
 
-2019-11-30 12:33:45,665 - tensorflow - WARNING - From main.py:69: The name tf.logging.ERROR is deprecated. Please use tf.compat.v1.logging.ERROR instead.
+2019-11-30 12:39:32,690 - tensorflow - WARNING - From main.py:69: The name tf.logging.ERROR is deprecated. Please use tf.compat.v1.logging.ERROR instead.
 
-2019-11-30 12:33:48,007 - FL-type - INFO - Clients in Total: 244
-2019-11-30 12:33:48,008 - FL-type - INFO - --- Random Initialization ---
+2019-11-30 12:39:35,035 - FL-type - INFO - Clients in Total: 244
+2019-11-30 12:39:35,036 - FL-type - INFO - --- Random Initialization ---
