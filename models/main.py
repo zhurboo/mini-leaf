@@ -6,6 +6,7 @@ import os
 import sys
 import random
 import time
+import eventlet
 import tensorflow as tf
 
 import metrics.writer as metrics_writer
@@ -24,7 +25,7 @@ STAT_METRICS_PATH = 'metrics/stat_metrics.csv'
 SYS_METRICS_PATH = 'metrics/sys_metrics.csv'
 
 def main():
-    
+    eventlet.monkey_patch()
     args = parse_args()
     
     config_name = args.config_file
@@ -101,17 +102,24 @@ def main():
         num_rounds = sys.maxsize
     for i in range(num_rounds):
         round_start_time = time.time()
-        logger.info('--- Round %d of %d: Training %d Clients ---' % (i + 1, num_rounds, clients_per_round))
-
-        # Select clients to train this round
-        server.select_clients(i, online(clients), num_clients=clients_per_round)
-        c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
-        logger.info("selected client_ids: {}".format(c_ids))
-        
-        # Simulate server model training on selected clients' data
-        sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch)
-        sys_writer_fn(i + 1, c_ids, sys_metrics, c_groups, c_num_samples)
-        
+        time_limit = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
+        try:
+            with eventlet.Timeout(time_limit, True):
+                logger.info('--- Round %d of %d: Training %d Clients ---' % (i + 1, num_rounds, clients_per_round))
+                
+                # Select clients to train this round
+                server.select_clients(i, online(clients), num_clients=clients_per_round)
+                c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
+                logger.info("selected client_ids: {}".format(c_ids))      
+                          
+                # Simulate server model training on selected clients' data
+                sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch)
+                sys_writer_fn(i + 1, c_ids, sys_metrics, c_groups, c_num_samples)
+        except:
+            # timeout
+            logger.info("round {} timeout, time limit = {} seconds".format(i+1, time_limit))
+            continue   
+             
         # Update server model
         server.update_model()
 

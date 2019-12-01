@@ -22,6 +22,7 @@ class Config():
         self.num_epochs = 1
         self.gpu_fraction = 0.2
         self.minibatch = None       # always None for FedAvg
+        self.round_ddl = [150, 10]
         
         logger.info('read config from {}'.format(config_file))
         self.read_config(config_file)
@@ -60,6 +61,9 @@ class Config():
                         self.model = str(value)
                     elif param == 'gpu_fraction':
                         self.gpu_fraction = float(value)
+                    elif param == 'round_ddl':
+                        mean, std = value.split(',')
+                        self.round_ddl = [float(mean), float(std)]
                 except Exception as e:
                     traceback.print_exc()
     
