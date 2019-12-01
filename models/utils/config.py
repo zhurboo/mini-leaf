@@ -22,7 +22,7 @@ class Config():
         self.num_epochs = 1
         self.gpu_fraction = 0.2
         self.minibatch = None       # always None for FedAvg
-        self.round_ddl = [150, 10]
+        self.round_ddl = [1000, 0]
         
         logger.info('read config from {}'.format(config_file))
         self.read_config(config_file)

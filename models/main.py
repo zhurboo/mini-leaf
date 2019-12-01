@@ -7,6 +7,7 @@ import sys
 import random
 import time
 import eventlet
+import signal
 import tensorflow as tf
 
 import metrics.writer as metrics_writer
@@ -94,27 +95,41 @@ def main():
     logger.info('--- Random Initialization ---')
     stat_writer_fn = get_stat_writer_function(client_ids, client_groups, client_num_samples, args)
     sys_writer_fn = get_sys_writer_function(args)
-    print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
+    # print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
 
     # Simulate training
     if num_rounds == -1:
         import sys
         num_rounds = sys.maxsize
+        
+    def timeout_handler(signum, frame):
+        raise Exception
+    
+    def exit_handler(signum, frame):
+        os._exit(0)
+    
     for i in range(num_rounds):
         round_start_time = time.time()
         time_limit = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
+        while time_limit <= 0:
+            time_limit = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
+            
         try:
-            with eventlet.Timeout(time_limit, True):
-                logger.info('--- Round %d of %d: Training %d Clients ---' % (i + 1, num_rounds, clients_per_round))
-                
-                # Select clients to train this round
-                server.select_clients(i, online(clients), num_clients=clients_per_round)
-                c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
-                logger.info("selected client_ids: {}".format(c_ids))      
-                          
-                # Simulate server model training on selected clients' data
-                sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch)
-                sys_writer_fn(i + 1, c_ids, sys_metrics, c_groups, c_num_samples)
+            signal.signal(signal.SIGINT, exit_handler)
+            signal.signal(signal.SIGTERM, exit_handler)
+            signal.signal(signal.SIGALRM, timeout_handler)
+            signal.alarm(int(time_limit))
+            logger.info('--- Round {} of {}: Training {} Clients time_limit = {} ---'.format(i + 1, num_rounds, clients_per_round, time_limit))
+            
+            # Select clients to train this round
+            server.select_clients(i, online(clients), num_clients=clients_per_round)
+            c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
+            logger.info("selected client_ids: {}".format(c_ids))   
+            
+            # Simulate server model training on selected clients' data
+            sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch)
+            sys_writer_fn(i + 1, c_ids, sys_metrics, c_groups, c_num_samples)
+            signal.alarm(0)
         except:
             # timeout
             logger.info("round {} timeout, time limit = {} seconds".format(i+1, time_limit))
@@ -122,7 +137,6 @@ def main():
              
         # Update server model
         server.update_model()
-
         logger.info("round {} used {} seconds".format(i+1, time.time()-round_start_time))
         
         # Test model
@@ -230,7 +244,7 @@ def print_metrics(metrics, weights, prefix=''):
 
 
 if __name__ == '__main__':
-    # python main.py -dataset shakespeare -model stacked_lstm
+    # nohup python main.py -dataset shakespeare -model stacked_lstm &
     start_time=time.time()
     main()
     # logger.info("used time = {}s".format(time.time() - start_time))
