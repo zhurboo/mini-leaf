@@ -106,7 +106,7 @@ def main():
         # Select clients to train this round
         server.select_clients(i, online(clients), num_clients=clients_per_round)
         c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
-        logger.info("selected client_ids:", c_ids)
+        logger.info("selected client_ids: {}".format(c_ids))
         
         # Simulate server model training on selected clients' data
         sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch)
