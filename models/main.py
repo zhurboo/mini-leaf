@@ -95,7 +95,7 @@ def main():
     logger.info('--- Random Initialization ---')
     stat_writer_fn = get_stat_writer_function(client_ids, client_groups, client_num_samples, args)
     sys_writer_fn = get_sys_writer_function(args)
-    # print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
+    print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
 
     # Simulate training
     if num_rounds == -1:
