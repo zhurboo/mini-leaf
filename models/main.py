@@ -92,7 +92,7 @@ def main():
     logger.info('Clients in Total: %d' % (len(clients)))
 
     # Initial status
-    logger.info('--- Random Initialization ---')
+    logger.info('===================== Random Initialization =====================')
     stat_writer_fn = get_stat_writer_function(client_ids, client_groups, client_num_samples, args)
     sys_writer_fn = get_sys_writer_function(args)
     print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
@@ -110,10 +110,27 @@ def main():
     
     for i in range(num_rounds):
         round_start_time = time.time()
+        logger.info('===================== Round {} of {} ====================='.format(i+1, num_rounds))
+        
+        # 1. selection stage
+        logger.info('--------------------- selection stage ---------------------')
+        # 1.1 select clients
+        server.select_clients(i, online(clients), num_clients=clients_per_round)
+        c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
+        logger.info("selected client_ids: {}".format(c_ids))
+        # 1.2 decide deadline for each client
         deadline = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
         while deadline <= 0:
             deadline = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
-            
+        deadline = int(deadline)
+        logger.info('selected deadline: {}'.format(deadline))
+        
+        # 2. configuration stage
+        logger.info('--------------------- configuration stage ---------------------')
+        # 2.1 train(no parallel implementation)
+        sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch, deadline = deadline)
+        sys_writer_fn(i + 1, c_ids, sys_metrics, c_groups, c_num_samples)
+        '''
         try:
             signal.signal(signal.SIGINT, exit_handler)
             signal.signal(signal.SIGTERM, exit_handler)
@@ -122,9 +139,7 @@ def main():
             logger.info('--- Round {} of {}: Training {} Clients deadline = {} ---'.format(i + 1, num_rounds, clients_per_round, deadline))
             
             # Select clients to train this round
-            server.select_clients(i, online(clients), num_clients=clients_per_round)
-            c_ids, c_groups, c_num_samples = server.get_clients_info(server.selected_clients)
-            logger.info("selected client_ids: {}".format(c_ids))   
+               
             
             # Simulate server model training on selected clients' data
             sys_metrics = server.train_model(num_epochs=cfg.num_epochs, batch_size=cfg.batch_size, minibatch=cfg.minibatch)
@@ -133,15 +148,20 @@ def main():
         except:
             # timeout
             logger.info("round {} timeout, deadline = {} seconds".format(i+1, deadline))
-             
-        # Update server model
+        ''' 
+        # 3. update stage
+        logger.info('--------------------- report stage ---------------------')
+        # 3.1 update global model
         server.update_model(cfg.update_frac)
-        logger.info("round {} used {} seconds".format(i+1, time.time()-round_start_time))
         
-        # Test model
+        # 3.2 total simulation time for this round
+        logger.info("simulating round {} used {} seconds".format(i+1, time.time()-round_start_time))
+        
+        # 4. Test model(if necessary)
         if eval_every == -1:
             continue
         if (i + 1) % eval_every == 0 or (i + 1) == num_rounds:
+            logger.info('--------------------- test result ---------------------')
             print_stats(i + 1, server, clients, client_num_samples, args, stat_writer_fn)
         
     

@@ -1,6 +1,12 @@
 import numpy as np
+import timeout_decorator
+import traceback
+from utils.logging import Logger
 
 from baseline_constants import BYTES_WRITTEN_KEY, BYTES_READ_KEY, LOCAL_COMPUTATIONS_KEY
+
+L = Logger()
+logger = L.get_logger()
 
 class Server:
     
@@ -29,7 +35,7 @@ class Server:
 
         return [(c.num_train_samples, c.num_test_samples) for c in self.selected_clients]
 
-    def train_model(self, num_epochs=1, batch_size=10, minibatch=None, clients=None):
+    def train_model(self, num_epochs=1, batch_size=10, minibatch=None, clients=None, deadline=-1):
         """Trains self.model on given clients.
         
         Trains model on self.selected_clients if clients=None;
@@ -42,6 +48,7 @@ class Server:
             batch_size: Size of training batches.
             minibatch: fraction of client's data to apply minibatch sgd,
                 None to use FedAvg
+            deadline: -1 for unlimited; >0 for each client's deadline
         Return:
             bytes_written: number of bytes written by each client to server 
                 dictionary with client ids as keys and integer values.
@@ -60,18 +67,30 @@ class Server:
             c.model.set_params(self.model)
         for c in clients:
             # c.model.set_params(self.model)
-            comp, num_samples, update = c.train(num_epochs, batch_size, minibatch)
-
-            sys_metrics[c.id][BYTES_READ_KEY] += c.model.size
-            sys_metrics[c.id][BYTES_WRITTEN_KEY] += c.model.size
-            sys_metrics[c.id][LOCAL_COMPUTATIONS_KEY] = comp
-
-            self.updates.append((c.id, num_samples, update))
+            try:
+                # set deadline 
+                c.set_deadline(deadline)
+                # training
+                logger.info('client {} starts training...'.format(c.id))
+                comp, num_samples, update = c.train(num_epochs, batch_size, minibatch)
+                sys_metrics[c.id][BYTES_READ_KEY] += c.model.size
+                sys_metrics[c.id][BYTES_WRITTEN_KEY] += c.model.size
+                sys_metrics[c.id][LOCAL_COMPUTATIONS_KEY] = comp
+                # uploading 
+                self.updates.append((c.id, num_samples, update))
+                logger.info('client {} upload successfully!'.format(c.id))
+            except timeout_decorator.timeout_decorator.TimeoutError as e:
+                logger.info('client {} failed: timeout!'.format(c.id))
+            except Exception as e:
+                logger.error('client {} failed: {}'.format(c.id, e))
+                traceback.print_exc()
 
         return sys_metrics
 
     def update_model(self, update_frac):
+        logger.info('{} of {} clients upload successfully'.format(len(self.updates), len(self.selected_clients)))
         if len(self.updates) / len(self.selected_clients) >= update_frac:        
+            logger.info('round succeed, updating global model...')
             used_client_ids = [cid for (cid, client_samples, client_model) in self.updates]
             total_weight = 0.
             base = [0] * len(self.updates[0][2])
@@ -88,7 +107,8 @@ class Server:
                         base[i] += (c.num_train_samples * v.astype(np.float64))
             averaged_soln = [v / total_weight for v in base]
             self.model = averaged_soln
-            
+        else:
+            logger.info('round failed, global model maintained.')
         self.updates = []
 
     def test_model(self, clients_to_test, set_to_use='test'):
