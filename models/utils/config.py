@@ -23,6 +23,7 @@ class Config():
         self.gpu_fraction = 0.2
         self.minibatch = None       # always None for FedAvg
         self.round_ddl = [1000, 0]
+        self.update_frac = 0.5
         
         logger.info('read config from {}'.format(config_file))
         self.read_config(config_file)
@@ -64,6 +65,8 @@ class Config():
                     elif param == 'round_ddl':
                         mean, std = value.split(',')
                         self.round_ddl = [float(mean), float(std)]
+                    elif param == 'update_frac':
+                        self.update_frac = float(value)
                 except Exception as e:
                     traceback.print_exc()
     

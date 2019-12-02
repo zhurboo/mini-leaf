@@ -110,16 +110,16 @@ def main():
     
     for i in range(num_rounds):
         round_start_time = time.time()
-        time_limit = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
-        while time_limit <= 0:
-            time_limit = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
+        deadline = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
+        while deadline <= 0:
+            deadline = np.random.normal(cfg.round_ddl[0], cfg.round_ddl[1])
             
         try:
             signal.signal(signal.SIGINT, exit_handler)
             signal.signal(signal.SIGTERM, exit_handler)
             signal.signal(signal.SIGALRM, timeout_handler)
-            signal.alarm(int(time_limit))
-            logger.info('--- Round {} of {}: Training {} Clients time_limit = {} ---'.format(i + 1, num_rounds, clients_per_round, time_limit))
+            signal.alarm(int(deadline))
+            logger.info('--- Round {} of {}: Training {} Clients deadline = {} ---'.format(i + 1, num_rounds, clients_per_round, deadline))
             
             # Select clients to train this round
             server.select_clients(i, online(clients), num_clients=clients_per_round)
@@ -132,11 +132,10 @@ def main():
             signal.alarm(0)
         except:
             # timeout
-            logger.info("round {} timeout, time limit = {} seconds".format(i+1, time_limit))
-            continue   
+            logger.info("round {} timeout, deadline = {} seconds".format(i+1, deadline))
              
         # Update server model
-        server.update_model()
+        server.update_model(cfg.update_frac)
         logger.info("round {} used {} seconds".format(i+1, time.time()-round_start_time))
         
         # Test model

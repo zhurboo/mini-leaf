@@ -70,24 +70,25 @@ class Server:
 
         return sys_metrics
 
-    def update_model(self):
-        used_client_ids = [cid for (cid, client_samples, client_model) in self.updates]
-        total_weight = 0.
-        base = [0] * len(self.updates[0][2])
-        for (cid, client_samples, client_model) in self.updates:
-            total_weight += client_samples
-            for i, v in enumerate(client_model):
-                base[i] += (client_samples * v.astype(np.float64))
-        for c in self.all_clients:
-            if c.id not in used_client_ids:
-                # c was not trained in this round
-                params = c.model.get_params()
-                total_weight += c.num_train_samples  # assume that all train_data is used to update
-                for i, v in enumerate(params):
-                    base[i] += (c.num_train_samples * v.astype(np.float64))
-        averaged_soln = [v / total_weight for v in base]
-
-        self.model = averaged_soln
+    def update_model(self, update_frac):
+        if len(self.updates) / len(self.selected_clients) >= update_frac:        
+            used_client_ids = [cid for (cid, client_samples, client_model) in self.updates]
+            total_weight = 0.
+            base = [0] * len(self.updates[0][2])
+            for (cid, client_samples, client_model) in self.updates:
+                total_weight += client_samples
+                for i, v in enumerate(client_model):
+                    base[i] += (client_samples * v.astype(np.float64))
+            for c in self.all_clients:
+                if c.id not in used_client_ids:
+                    # c was not trained in this round
+                    params = c.model.get_params()
+                    total_weight += c.num_train_samples  # assume that all train_data is used to update
+                    for i, v in enumerate(params):
+                        base[i] += (c.num_train_samples * v.astype(np.float64))
+            averaged_soln = [v / total_weight for v in base]
+            self.model = averaged_soln
+            
         self.updates = []
 
     def test_model(self, clients_to_test, set_to_use='test'):
