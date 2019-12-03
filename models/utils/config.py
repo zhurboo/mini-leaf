@@ -24,6 +24,12 @@ class Config():
         self.minibatch = None       # always None for FedAvg
         self.round_ddl = [1000, 0]
         self.update_frac = 0.5
+        self.big_upload_time = [5.0, 1.0]
+        self.mid_upload_time = [10.0, 1.0]
+        self.small_upload_time = [15.0, 1.0]
+        self.big_speed = [150.0, 1.0]
+        self.mid_speed = [100.0, 1.0]
+        self.small_speed = [50.0, 1.0]
         
         logger.info('read config from {}'.format(config_file))
         self.read_config(config_file)

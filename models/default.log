@@ -1,56 +1,40 @@
-2019-12-03 05:35:10,141 - FL-type - INFO - logger init finied ---- log file: default.log
-2019-12-03 05:35:10,199 - FL-type - INFO - read config from default.cfg
-2019-12-03 05:35:10,200 - FL-type - INFO - ================= Config =================
-2019-12-03 05:35:10,200 - FL-type - INFO - 	dataset = shakespeare
-2019-12-03 05:35:10,200 - FL-type - INFO - 	model = stacked_lstm
-2019-12-03 05:35:10,200 - FL-type - INFO - 	num_rounds = -1
-2019-12-03 05:35:10,200 - FL-type - INFO - 	lr = 0.1
-2019-12-03 05:35:10,201 - FL-type - INFO - 	eval_every = 3
-2019-12-03 05:35:10,201 - FL-type - INFO - 	clients_per_round = 5
-2019-12-03 05:35:10,201 - FL-type - INFO - 	batch_size = 10
-2019-12-03 05:35:10,201 - FL-type - INFO - 	seed = 0
-2019-12-03 05:35:10,201 - FL-type - INFO - 	metrics_file = metrics
-2019-12-03 05:35:10,201 - FL-type - INFO - 	num_epochs = 1
-2019-12-03 05:35:10,202 - FL-type - INFO - 	gpu_fraction = 0.2
-2019-12-03 05:35:10,202 - FL-type - INFO - 	minibatch = None
-2019-12-03 05:35:10,202 - FL-type - INFO - 	round_ddl = [50.0, 5.0]
-2019-12-03 05:35:10,202 - FL-type - INFO - 	update_frac = 0.5
-2019-12-03 05:35:10,202 - FL-type - INFO - 	big_upload_time = [5.0, 1.0]
-2019-12-03 05:35:10,203 - FL-type - INFO - 	mid_upload_time = [10.0, 1.0]
-2019-12-03 05:35:10,203 - FL-type - INFO - 	small_upload_time = [15.0, 1.0]
-2019-12-03 05:35:10,203 - FL-type - INFO - 	big_speed = [150.0, 1.0]
-2019-12-03 05:35:10,203 - FL-type - INFO - 	mid_speed = [100.0, 1.0]
-2019-12-03 05:35:10,203 - FL-type - INFO - 	small_speed = [50.0, 1.0]
-2019-12-03 05:35:10,203 - FL-type - INFO - ================= ====== =================
-2019-12-03 05:35:10,219 - FL-type - INFO - ############################## shakespeare.stacked_lstm ##############################
-2019-12-03 05:35:10,788 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
-2019-12-03 05:35:11,105 - tensorflow - WARNING - From main.py:71: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+2019-12-03 05:40:48,331 - FL-type - INFO - logger init finied ---- log file: default.log
+2019-12-03 05:40:48,393 - FL-type - INFO - read config from default.cfg
+2019-12-03 05:40:48,394 - FL-type - INFO - ================= Config =================
+2019-12-03 05:40:48,394 - FL-type - INFO - 	dataset = shakespeare
+2019-12-03 05:40:48,394 - FL-type - INFO - 	model = stacked_lstm
+2019-12-03 05:40:48,394 - FL-type - INFO - 	num_rounds = -1
+2019-12-03 05:40:48,394 - FL-type - INFO - 	lr = 0.1
+2019-12-03 05:40:48,395 - FL-type - INFO - 	eval_every = 3
+2019-12-03 05:40:48,395 - FL-type - INFO - 	clients_per_round = 5
+2019-12-03 05:40:48,395 - FL-type - INFO - 	batch_size = 10
+2019-12-03 05:40:48,395 - FL-type - INFO - 	seed = 0
+2019-12-03 05:40:48,395 - FL-type - INFO - 	metrics_file = metrics
+2019-12-03 05:40:48,395 - FL-type - INFO - 	num_epochs = 1
+2019-12-03 05:40:48,396 - FL-type - INFO - 	gpu_fraction = 0.2
+2019-12-03 05:40:48,396 - FL-type - INFO - 	minibatch = None
+2019-12-03 05:40:48,396 - FL-type - INFO - 	round_ddl = [50.0, 5.0]
+2019-12-03 05:40:48,396 - FL-type - INFO - 	update_frac = 0.5
+2019-12-03 05:40:48,396 - FL-type - INFO - 	big_upload_time = [5.0, 1.0]
+2019-12-03 05:40:48,396 - FL-type - INFO - 	mid_upload_time = [10.0, 1.0]
+2019-12-03 05:40:48,397 - FL-type - INFO - 	small_upload_time = [15.0, 1.0]
+2019-12-03 05:40:48,397 - FL-type - INFO - 	big_speed = [150.0, 1.0]
+2019-12-03 05:40:48,397 - FL-type - INFO - 	mid_speed = [100.0, 1.0]
+2019-12-03 05:40:48,397 - FL-type - INFO - 	small_speed = [50.0, 1.0]
+2019-12-03 05:40:48,397 - FL-type - INFO - ================= ====== =================
+2019-12-03 05:40:48,414 - FL-type - INFO - ############################## shakespeare.stacked_lstm ##############################
+2019-12-03 05:40:48,982 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
+2019-12-03 05:40:49,297 - tensorflow - WARNING - From main.py:71: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
 
-2019-12-03 05:35:11,106 - tensorflow - WARNING - From main.py:71: The name tf.logging.ERROR is deprecated. Please use tf.compat.v1.logging.ERROR instead.
+2019-12-03 05:40:49,298 - tensorflow - WARNING - From main.py:71: The name tf.logging.ERROR is deprecated. Please use tf.compat.v1.logging.ERROR instead.
 
-2019-12-03 05:35:13,542 - FL-type - INFO - Clients in Total: 244
-2019-12-03 05:35:13,543 - FL-type - INFO - ===================== Random Initialization =====================
-2019-12-03 05:35:13,543 - FL-type - INFO - ===================== Round 1 of 9223372036854775807 =====================
-2019-12-03 05:35:13,543 - FL-type - INFO - --------------------- selection stage ---------------------
-2019-12-03 05:35:13,544 - FL-type - INFO - selected client_ids: ['THE_COMEDY_OF_ERRORS_AEGEON', 'SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER', 'MEASURE_FOR_MEASURE_FROTH', 'THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD', 'THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW']
-2019-12-03 05:35:13,545 - FL-type - INFO - selected deadline: 58
-2019-12-03 05:35:13,545 - FL-type - INFO - --------------------- configuration stage ---------------------
-2019-12-03 05:35:14,501 - FL-type - DEBUG - client THE_COMEDY_OF_ERRORS_AEGEON's deadline is set to 58
-2019-12-03 05:35:14,501 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_AEGEON starts training...
-2019-12-03 05:35:14,501 - FL-type - INFO - train_time_limit: 54
-2019-12-03 05:36:08,590 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_AEGEON failed: timeout!
-2019-12-03 05:36:08,590 - FL-type - DEBUG - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER's deadline is set to 58
-2019-12-03 05:36:08,591 - FL-type - INFO - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER starts training...
-2019-12-03 05:36:08,591 - FL-type - INFO - train_time_limit: 54
-2019-12-03 05:36:13,014 - FL-type - INFO - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER upload successfully!
-2019-12-03 05:36:13,015 - FL-type - DEBUG - client MEASURE_FOR_MEASURE_FROTH's deadline is set to 58
-2019-12-03 05:36:13,015 - FL-type - INFO - client MEASURE_FOR_MEASURE_FROTH starts training...
-2019-12-03 05:36:13,015 - FL-type - INFO - train_time_limit: 42
-2019-12-03 05:36:15,910 - FL-type - INFO - client MEASURE_FOR_MEASURE_FROTH upload successfully!
-2019-12-03 05:36:15,911 - FL-type - DEBUG - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD's deadline is set to 58
-2019-12-03 05:36:15,911 - FL-type - INFO - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD starts training...
-2019-12-03 05:36:15,911 - FL-type - INFO - train_time_limit: 43
-2019-12-03 05:36:35,866 - FL-type - INFO - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD upload successfully!
-2019-12-03 05:36:35,866 - FL-type - DEBUG - client THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW's deadline is set to 58
-2019-12-03 05:36:35,866 - FL-type - INFO - client THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW starts training...
-2019-12-03 05:36:35,866 - FL-type - INFO - train_time_limit: 53
+2019-12-03 05:40:51,703 - FL-type - INFO - Clients in Total: 244
+2019-12-03 05:40:51,703 - FL-type - INFO - ===================== Random Initialization =====================
+2019-12-03 05:40:51,704 - FL-type - INFO - ===================== Round 1 of 9223372036854775807 =====================
+2019-12-03 05:40:51,704 - FL-type - INFO - --------------------- selection stage ---------------------
+2019-12-03 05:40:51,704 - FL-type - INFO - selected client_ids: ['THE_COMEDY_OF_ERRORS_AEGEON', 'SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER', 'MEASURE_FOR_MEASURE_FROTH', 'THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD', 'THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW']
+2019-12-03 05:40:51,705 - FL-type - INFO - selected deadline: 58
+2019-12-03 05:40:51,705 - FL-type - INFO - --------------------- configuration stage ---------------------
+2019-12-03 05:40:52,656 - FL-type - DEBUG - client THE_COMEDY_OF_ERRORS_AEGEON's deadline is set to 58
+2019-12-03 05:40:52,657 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_AEGEON starts training...
+2019-12-03 05:40:52,657 - FL-type - INFO - train_time_limit: 54
