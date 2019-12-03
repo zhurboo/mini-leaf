@@ -2,6 +2,7 @@ import random
 import warnings
 import timeout_decorator
 import sys
+import numpy as np
 
 from utils.logging import Logger
 
@@ -10,7 +11,7 @@ logger = L.get_logger()
 
 class Client:
     
-    def __init__(self, client_id, group=None, train_data={'x' : [],'y' : []}, eval_data={'x' : [],'y' : []}, model=None):
+    def __init__(self, client_id, group=None, train_data={'x' : [],'y' : []}, eval_data={'x' : [],'y' : []}, model=None, device=0, cfg=None):
         self._model = model
         self.id = client_id # integer
         self.group = group
@@ -18,9 +19,41 @@ class Client:
         self.eval_data = eval_data
         self.deadline = 1 # < 0 for unlimited
         # TODO change upload time to upload spead (upload time = upload num / upload speed)
-        self.upload_time = 10
+        self.device = device  # 0 small, 1 mid, 2 big
+        if device == 0:
+            self.upload_time = np.random.normal(cfg.small_upload_time[0], cfg.small_upload_time[1])
+            while self.upload_time <= 0:
+                self.upload_time = np.random.normal(cfg.small_upload_time[0], cfg.small_upload_time[1])
+            self.upload_time = int(self.upload_time)
+            
+            self.speed = np.random.normal(cfg.small_speed[0], cfg.small_speed[1])
+            while self.speed <= 0:
+                self.speed = np.random.normal(cfg.small_speed[0], cfg.small_speed[1])
+            self.speed = int(self.speed)
+        
+        elif device == 1:
+            self.upload_time = np.random.normal(cfg.mid_upload_time[0], cfg.mid_upload_time[1])
+            while self.upload_time <= 0:
+                self.upload_time = np.random.normal(cfg.mid_upload_time[0], cfg.mid_upload_time[1])
+            self.upload_time = int(self.upload_time)
+            
+            self.speed = np.random.normal(cfg.mid_speed[0], cfg.mid_speed[1])
+            while self.speed <= 0:
+                self.speed = np.random.normal(cfg.mid_speed[0], cfg.mid_speed[1])
+            self.speed = int(self.speed)
+            
+        elif device == 2:
+            self.upload_time = np.random.normal(cfg.big_upload_time[0], cfg.big_upload_time[1])
+            while self.upload_time <= 0:
+                self.upload_time = np.random.normal(cfg.big_upload_time[0], cfg.big_upload_time[1])
+            self.upload_time = int(self.upload_time)  
+            
+            self.speed = np.random.normal(cfg.big_speed[0], cfg.big_speed[1])
+            while self.speed <= 0:
+                self.speed = np.random.normal(cfg.big_speed[0], cfg.big_speed[1])
+            self.speed = int(self.speed)      
+               
 
-    
     def train(self, num_epochs=1, batch_size=10, minibatch=None):
         """Trains on self.model using the client's train_data.
 

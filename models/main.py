@@ -82,8 +82,8 @@ def main():
     client_model = ClientModel(cfg.seed, *model_params, cfg.gpu_fraction)
 
     # Create clients
-    clients = setup_clients(cfg.dataset, client_model)
-
+    clients = setup_clients(cfg, client_model)
+    # print(sorted([c.num_train_samples for c in clients]))
     # Create server
     server = Server(client_model, clients)
     
@@ -95,7 +95,7 @@ def main():
     logger.info('===================== Random Initialization =====================')
     stat_writer_fn = get_stat_writer_function(client_ids, client_groups, client_num_samples, args)
     sys_writer_fn = get_sys_writer_function(args)
-    print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
+    # print_stats(0, server, clients, client_num_samples, args, stat_writer_fn)
 
     # Simulate training
     if num_rounds == -1:
@@ -180,25 +180,25 @@ def online(clients):
     return clients
 
 
-def create_clients(users, groups, train_data, test_data, model):
+def create_clients(users, groups, train_data, test_data, model, cfg):
     if len(groups) == 0:
         groups = [[] for _ in users]
-    clients = [Client(u, g, train_data[u], test_data[u], model) for u, g in zip(users, groups)]
+    clients = [Client(u, g, train_data[u], test_data[u], model, random.randint(0, 2), cfg) for u, g in zip(users, groups)]
     return clients
 
 
-def setup_clients(dataset, model=None):
+def setup_clients(cfg, model=None):
     """Instantiates clients based on given train and test data directories.
 
     Return:
         all_clients: list of Client objects.
     """
-    train_data_dir = os.path.join('..', 'data', dataset, 'data', 'train')
-    test_data_dir = os.path.join('..', 'data', dataset, 'data', 'test')
+    train_data_dir = os.path.join('..', 'data', cfg.dataset, 'data', 'train')
+    test_data_dir = os.path.join('..', 'data', cfg.dataset, 'data', 'test')
 
     users, groups, train_data, test_data = read_data(train_data_dir, test_data_dir)
 
-    clients = create_clients(users, groups, train_data, test_data, model)
+    clients = create_clients(users, groups, train_data, test_data, model, cfg)
 
     return clients
 

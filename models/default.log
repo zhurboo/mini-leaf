@@ -1,63 +1,56 @@
-2019-12-02 08:40:52,536 - FL-type - INFO - logger init finied ---- log file: default.log
-2019-12-02 08:40:52,591 - FL-type - INFO - read config from default.cfg
-2019-12-02 08:40:52,591 - FL-type - INFO - ================= Config =================
-2019-12-02 08:40:52,591 - FL-type - INFO - 	dataset = shakespeare
-2019-12-02 08:40:52,591 - FL-type - INFO - 	model = stacked_lstm
-2019-12-02 08:40:52,592 - FL-type - INFO - 	num_rounds = -1
-2019-12-02 08:40:52,592 - FL-type - INFO - 	lr = 0.1
-2019-12-02 08:40:52,592 - FL-type - INFO - 	eval_every = 3
-2019-12-02 08:40:52,592 - FL-type - INFO - 	clients_per_round = 5
-2019-12-02 08:40:52,592 - FL-type - INFO - 	batch_size = 10
-2019-12-02 08:40:52,592 - FL-type - INFO - 	seed = 0
-2019-12-02 08:40:52,592 - FL-type - INFO - 	metrics_file = metrics
-2019-12-02 08:40:52,592 - FL-type - INFO - 	num_epochs = 1
-2019-12-02 08:40:52,592 - FL-type - INFO - 	gpu_fraction = 0.2
-2019-12-02 08:40:52,593 - FL-type - INFO - 	minibatch = None
-2019-12-02 08:40:52,593 - FL-type - INFO - 	round_ddl = [30.0, 5.0]
-2019-12-02 08:40:52,593 - FL-type - INFO - 	update_frac = 0.5
-2019-12-02 08:40:52,593 - FL-type - INFO - ================= ====== =================
-2019-12-02 08:40:52,608 - FL-type - INFO - ############################## shakespeare.stacked_lstm ##############################
-2019-12-02 08:40:53,175 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
-2019-12-02 08:40:53,491 - tensorflow - WARNING - From main.py:71: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
+2019-12-03 05:35:10,141 - FL-type - INFO - logger init finied ---- log file: default.log
+2019-12-03 05:35:10,199 - FL-type - INFO - read config from default.cfg
+2019-12-03 05:35:10,200 - FL-type - INFO - ================= Config =================
+2019-12-03 05:35:10,200 - FL-type - INFO - 	dataset = shakespeare
+2019-12-03 05:35:10,200 - FL-type - INFO - 	model = stacked_lstm
+2019-12-03 05:35:10,200 - FL-type - INFO - 	num_rounds = -1
+2019-12-03 05:35:10,200 - FL-type - INFO - 	lr = 0.1
+2019-12-03 05:35:10,201 - FL-type - INFO - 	eval_every = 3
+2019-12-03 05:35:10,201 - FL-type - INFO - 	clients_per_round = 5
+2019-12-03 05:35:10,201 - FL-type - INFO - 	batch_size = 10
+2019-12-03 05:35:10,201 - FL-type - INFO - 	seed = 0
+2019-12-03 05:35:10,201 - FL-type - INFO - 	metrics_file = metrics
+2019-12-03 05:35:10,201 - FL-type - INFO - 	num_epochs = 1
+2019-12-03 05:35:10,202 - FL-type - INFO - 	gpu_fraction = 0.2
+2019-12-03 05:35:10,202 - FL-type - INFO - 	minibatch = None
+2019-12-03 05:35:10,202 - FL-type - INFO - 	round_ddl = [50.0, 5.0]
+2019-12-03 05:35:10,202 - FL-type - INFO - 	update_frac = 0.5
+2019-12-03 05:35:10,202 - FL-type - INFO - 	big_upload_time = [5.0, 1.0]
+2019-12-03 05:35:10,203 - FL-type - INFO - 	mid_upload_time = [10.0, 1.0]
+2019-12-03 05:35:10,203 - FL-type - INFO - 	small_upload_time = [15.0, 1.0]
+2019-12-03 05:35:10,203 - FL-type - INFO - 	big_speed = [150.0, 1.0]
+2019-12-03 05:35:10,203 - FL-type - INFO - 	mid_speed = [100.0, 1.0]
+2019-12-03 05:35:10,203 - FL-type - INFO - 	small_speed = [50.0, 1.0]
+2019-12-03 05:35:10,203 - FL-type - INFO - ================= ====== =================
+2019-12-03 05:35:10,219 - FL-type - INFO - ############################## shakespeare.stacked_lstm ##############################
+2019-12-03 05:35:10,788 - numexpr.utils - INFO - NumExpr defaulting to 4 threads.
+2019-12-03 05:35:11,105 - tensorflow - WARNING - From main.py:71: The name tf.logging.set_verbosity is deprecated. Please use tf.compat.v1.logging.set_verbosity instead.
 
-2019-12-02 08:40:53,491 - tensorflow - WARNING - From main.py:71: The name tf.logging.ERROR is deprecated. Please use tf.compat.v1.logging.ERROR instead.
+2019-12-03 05:35:11,106 - tensorflow - WARNING - From main.py:71: The name tf.logging.ERROR is deprecated. Please use tf.compat.v1.logging.ERROR instead.
 
-2019-12-02 08:40:55,912 - FL-type - INFO - Clients in Total: 244
-2019-12-02 08:40:55,912 - FL-type - INFO - ===================== Random Initialization =====================
-2019-12-02 08:40:55,913 - FL-type - INFO - ===================== Round 1 of 9223372036854775807 =====================
-2019-12-02 08:40:55,913 - FL-type - INFO - --------------------- selection stage ---------------------
-2019-12-02 08:40:55,914 - FL-type - INFO - selected client_ids: ['THE_COMEDY_OF_ERRORS_AEGEON', 'SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER', 'MEASURE_FOR_MEASURE_FROTH', 'THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD', 'THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW']
-2019-12-02 08:40:55,914 - FL-type - INFO - selected deadline: 38
-2019-12-02 08:40:55,914 - FL-type - INFO - --------------------- configuration stage ---------------------
-2019-12-02 08:40:56,874 - FL-type - DEBUG - client THE_COMEDY_OF_ERRORS_AEGEON's deadline is set to 38
-2019-12-02 08:40:56,875 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_AEGEON starts training...
-2019-12-02 08:40:56,875 - FL-type - DEBUG - train_time_limit: 28
-2019-12-02 08:41:24,993 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_AEGEON failed: timeout!
-2019-12-02 08:41:24,993 - FL-type - DEBUG - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER's deadline is set to 38
-2019-12-02 08:41:24,993 - FL-type - INFO - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER starts training...
-2019-12-02 08:41:24,993 - FL-type - DEBUG - train_time_limit: 28
-2019-12-02 08:41:29,428 - FL-type - INFO - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER upload successfully!
-2019-12-02 08:41:29,428 - FL-type - DEBUG - client MEASURE_FOR_MEASURE_FROTH's deadline is set to 38
-2019-12-02 08:41:29,428 - FL-type - INFO - client MEASURE_FOR_MEASURE_FROTH starts training...
-2019-12-02 08:41:29,429 - FL-type - DEBUG - train_time_limit: 28
-2019-12-02 08:41:32,315 - FL-type - INFO - client MEASURE_FOR_MEASURE_FROTH upload successfully!
-2019-12-02 08:41:32,315 - FL-type - DEBUG - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD's deadline is set to 38
-2019-12-02 08:41:32,315 - FL-type - INFO - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD starts training...
-2019-12-02 08:41:32,315 - FL-type - DEBUG - train_time_limit: 28
-2019-12-02 08:41:51,902 - FL-type - INFO - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD upload successfully!
-2019-12-02 08:41:51,902 - FL-type - DEBUG - client THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW's deadline is set to 38
-2019-12-02 08:41:51,902 - FL-type - INFO - client THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW starts training...
-2019-12-02 08:41:51,902 - FL-type - DEBUG - train_time_limit: 28
-2019-12-02 08:42:01,468 - FL-type - INFO - client THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW upload successfully!
-2019-12-02 08:42:01,539 - FL-type - INFO - --------------------- report stage ---------------------
-2019-12-02 08:42:01,539 - FL-type - INFO - 4 of 5 clients upload successfully
-2019-12-02 08:42:01,540 - FL-type - INFO - round succeed, updating global model...
-2019-12-02 08:42:02,232 - FL-type - INFO - simulating round 1 used 66.31942391395569 seconds
-2019-12-02 08:42:02,232 - FL-type - INFO - ===================== Round 2 of 9223372036854775807 =====================
-2019-12-02 08:42:02,232 - FL-type - INFO - --------------------- selection stage ---------------------
-2019-12-02 08:42:02,233 - FL-type - INFO - selected client_ids: ['THE_COMEDY_OF_ERRORS_BALTHAZAR', 'TWELFTH_NIGHT__OR__WHAT_YOU_WILL_SECOND_OFFICER', 'THE_TRAGEDY_OF_OTHELLO__MOOR_OF_VENICE_THIRD_GENTLEMAN', 'THE_MERRY_WIVES_OF_WINDSOR_HOST', 'THE_HISTORY_OF_TROILUS_AND_CRESSIDA_HELENUS']
-2019-12-02 08:42:02,233 - FL-type - INFO - selected deadline: 29
-2019-12-02 08:42:02,233 - FL-type - INFO - --------------------- configuration stage ---------------------
-2019-12-02 08:42:03,303 - FL-type - DEBUG - client THE_COMEDY_OF_ERRORS_BALTHAZAR's deadline is set to 29
-2019-12-02 08:42:03,304 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_BALTHAZAR starts training...
-2019-12-02 08:42:03,304 - FL-type - DEBUG - train_time_limit: 19
+2019-12-03 05:35:13,542 - FL-type - INFO - Clients in Total: 244
+2019-12-03 05:35:13,543 - FL-type - INFO - ===================== Random Initialization =====================
+2019-12-03 05:35:13,543 - FL-type - INFO - ===================== Round 1 of 9223372036854775807 =====================
+2019-12-03 05:35:13,543 - FL-type - INFO - --------------------- selection stage ---------------------
+2019-12-03 05:35:13,544 - FL-type - INFO - selected client_ids: ['THE_COMEDY_OF_ERRORS_AEGEON', 'SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER', 'MEASURE_FOR_MEASURE_FROTH', 'THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD', 'THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW']
+2019-12-03 05:35:13,545 - FL-type - INFO - selected deadline: 58
+2019-12-03 05:35:13,545 - FL-type - INFO - --------------------- configuration stage ---------------------
+2019-12-03 05:35:14,501 - FL-type - DEBUG - client THE_COMEDY_OF_ERRORS_AEGEON's deadline is set to 58
+2019-12-03 05:35:14,501 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_AEGEON starts training...
+2019-12-03 05:35:14,501 - FL-type - INFO - train_time_limit: 54
+2019-12-03 05:36:08,590 - FL-type - INFO - client THE_COMEDY_OF_ERRORS_AEGEON failed: timeout!
+2019-12-03 05:36:08,590 - FL-type - DEBUG - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER's deadline is set to 58
+2019-12-03 05:36:08,591 - FL-type - INFO - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER starts training...
+2019-12-03 05:36:08,591 - FL-type - INFO - train_time_limit: 54
+2019-12-03 05:36:13,014 - FL-type - INFO - client SECOND_PART_OF_KING_HENRY_IV_SECOND_DRAWER upload successfully!
+2019-12-03 05:36:13,015 - FL-type - DEBUG - client MEASURE_FOR_MEASURE_FROTH's deadline is set to 58
+2019-12-03 05:36:13,015 - FL-type - INFO - client MEASURE_FOR_MEASURE_FROTH starts training...
+2019-12-03 05:36:13,015 - FL-type - INFO - train_time_limit: 42
+2019-12-03 05:36:15,910 - FL-type - INFO - client MEASURE_FOR_MEASURE_FROTH upload successfully!
+2019-12-03 05:36:15,911 - FL-type - DEBUG - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD's deadline is set to 58
+2019-12-03 05:36:15,911 - FL-type - INFO - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD starts training...
+2019-12-03 05:36:15,911 - FL-type - INFO - train_time_limit: 43
+2019-12-03 05:36:35,866 - FL-type - INFO - client THE_LIFE_OF_TIMON_OF_ATHENS_SECOND_LORD upload successfully!
+2019-12-03 05:36:35,866 - FL-type - DEBUG - client THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW's deadline is set to 58
+2019-12-03 05:36:35,866 - FL-type - INFO - client THE_TWO_GENTLEMEN_OF_VERONA_SECOND_OUTLAW starts training...
+2019-12-03 05:36:35,866 - FL-type - INFO - train_time_limit: 53

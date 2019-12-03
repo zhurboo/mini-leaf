@@ -39,34 +39,45 @@ class Config():
                 if line.startswith('#'):
                     continue
                 try:
-                    param, value = line.split()
-                    if param == 'num_rounds':
-                        self.num_rounds = int(value)
-                    elif param == 'learning_rate':
-                        self.lr = float(value)
-                    elif param == 'eval_every':
-                        self.eval_every = int(value)
-                    elif param == 'clients_per_round':
-                        self.clients_per_round = int(value)
-                    elif param == 'batch_size':
-                        self.batch_size = int(value)
-                    elif param == 'seed':
-                        self.seed = int(value)
-                    elif param == 'metrics_file':
-                        self.metrics_file = str(value)
-                    elif param == 'num_epochs':
-                        self.num_epochs = int(value)
-                    elif param == 'dataset':
-                        self.dataset = str(value)
-                    elif param == 'model':
-                        self.model = str(value)
-                    elif param == 'gpu_fraction':
-                        self.gpu_fraction = float(value)
-                    elif param == 'round_ddl':
-                        mean, std = value.split(',')
-                        self.round_ddl = [float(mean), float(std)]
-                    elif param == 'update_frac':
-                        self.update_frac = float(value)
+                    line = line.split()
+                    if line[0] == 'num_rounds':
+                        self.num_rounds = int(line[1])
+                    elif line[0] == 'learning_rate':
+                        self.lr = float(line[1])
+                    elif line[0] == 'eval_every':
+                        self.eval_every = int(line[1])
+                    elif line[0] == 'clients_per_round':
+                        self.clients_per_round = int(line[1])
+                    elif line[0] == 'batch_size':
+                        self.batch_size = int(line[1])
+                    elif line[0] == 'seed':
+                        self.seed = int(line[1])
+                    elif line[0] == 'metrics_file':
+                        self.metrics_file = str(line[1])
+                    elif line[0] == 'num_epochs':
+                        self.num_epochs = int(line[1])
+                    elif line[0] == 'dataset':
+                        self.dataset = str(line[1])
+                    elif line[0] == 'model':
+                        self.model = str(line[1])
+                    elif line[0] == 'gpu_fraction':
+                        self.gpu_fraction = float(line[1])
+                    elif line[0] == 'round_ddl':
+                        self.round_ddl = [float(line[1]), float(line[2])]
+                    elif line[0] == 'update_frac':
+                        self.update_frac = float(line[1])
+                    elif line[0] == 'big_upload_time':
+                        self.big_upload_time = [float(line[1]), float(line[2])]
+                    elif line[0] == 'mid_upload_time':
+                        self.mid_upload_time = [float(line[1]), float(line[2])]
+                    elif line[0] == 'small_upload_time':
+                        self.small_upload_time = [float(line[1]), float(line[2])]
+                    elif line[0] == 'big_speed':
+                        self.big_speed = [float(line[1]), float(line[2])]
+                    elif line[0] == 'mid_speed':
+                        self.mid_speed = [float(line[1]), float(line[2])]
+                    elif line[0] == 'small_speed':
+                        self.small_speed = [float(line[1]), float(line[2])]
                 except Exception as e:
                     traceback.print_exc()
     
