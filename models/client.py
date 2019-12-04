@@ -39,7 +39,7 @@ class Client:
         # change upload time to upload spead (upload time = upload num / upload speed) 
         
         train_time_limit = self.get_train_time_limit()
-        logger.info('train_time_limit: {}'.format(train_time_limit))
+        logger.debug('train_time_limit: {}'.format(train_time_limit))
         
         @timeout_decorator.timeout(train_time_limit)
         def train_inner(self, num_epochs=1, batch_size=10, minibatch=None):

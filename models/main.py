@@ -68,7 +68,7 @@ def main():
     clients_per_round = cfg.clients_per_round
     
     # Suppress tf warnings
-    tf.logging.set_verbosity(tf.logging.ERROR)
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
     # Create 2 models
     model_params = MODEL_PARAMS[model_path]

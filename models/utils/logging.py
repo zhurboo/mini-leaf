@@ -8,7 +8,7 @@ class Logger():
         if Logger.logger != None:
             return Logger.logger
         log_file = '{}.log'.format(Logger.log_name)
-        logging.basicConfig(level = logging.DEBUG, 
+        logging.basicConfig(level = logging.INFO, 
                     filename=log_file,
                     filemode='w',
                     format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
