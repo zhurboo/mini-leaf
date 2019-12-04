@@ -1,5 +1,67 @@
 # Leaf: A Benchmark for Federated Settings
 
+## What we have done to Leaf
+
+Briefly speaking, we make Leaf simulate the federated learning process more in line with the fact. 
+
+### Deadline
+
+We add deadline setting for simulating failed upload and time out training. Now deadline follows a normal distribution in each round, and each client has the same deadline in one round. You can set the deadline's normal distribution parameters in the config file.
+
+### Device Type
+
+Each client is bundled with a device type. Each device type has different training speeds and uploading time. We support the small/mid/big device, whose parameter can be set in the config file. We also support self-defined device type(-1) whose parameter you can set in the code manually for more complexed simulation. Note that if a client's device is not specified i.e. None, the program will use real training time instead of the simulation time, which is not recommended.
+
+### Round Failure
+
+In federated settings, if there are not enough devices to upload the results in a round, then this round will be regarded as a failed round and the global model will not be updated. To simulate it, we add a update_frac parameter. If the uploaded fraction is smaller than update_frac, then this round will fail. You can also set it in the config file.
+
+### Config
+
+To simplify the command line arguments, we move most of the parameters to a config file. Also, we add some other parameters as put above for better simulation. Here are some details.
+
+```bash
+# -1 for unlimited, >0 for round num
+num_rounds -1
+# learning rate
+learning_rate 0.1
+# evaluate the global model's loss and accuracy every 'eval_every' round
+eval_every 3
+# client num per round
+clients_per_round 30
+# batch size
+batch_size 10
+# random seed
+seed 0
+# run 'num_epochs' epochs in one round for each client
+num_epochs 1
+# deadline's μ and σ
+round_ddl 30 5
+# least update fraction for a successful round
+update_frac 0.5
+# μ and σ of big device's upload time
+big_upload_time 5 1
+# μ and σ of mid device's upload time
+mid_upload_time 10 1
+# μ and σ of small device's upload time
+small_upload_time 15 1
+# μ and σ of big device's training speed
+big_speed 150 1
+# μ and σ of mid device's training speed
+mid_speed 100 1
+# μ and σ of small device's training speed
+small_speed 50 1
+```
+
+## How to run it
+
+```bash
+git clone https://github.com/lh-ycx/leaf.git
+pip3 install -r requirements.txt
+cd leaf/models/
+python3 main.py
+```
+
 ## Resources
 
   * **Homepage:** [leaf.cmu.edu](https://leaf.cmu.edu)
