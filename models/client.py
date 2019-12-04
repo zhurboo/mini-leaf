@@ -5,13 +5,14 @@ import sys
 import numpy as np
 
 from utils.logging import Logger
+from device import Device
 
 L = Logger()
 logger = L.get_logger()
 
 class Client:
     
-    def __init__(self, client_id, group=None, train_data={'x' : [],'y' : []}, eval_data={'x' : [],'y' : []}, model=None, device=0, cfg=None):
+    def __init__(self, client_id, group=None, train_data={'x' : [],'y' : []}, eval_data={'x' : [],'y' : []}, model=None, device=None):
         self._model = model
         self.id = client_id # integer
         self.group = group
@@ -19,7 +20,13 @@ class Client:
         self.eval_data = eval_data
         self.deadline = 1 # < 0 for unlimited
         # TODO change upload time to upload spead (upload time = upload num / upload speed)
-        self.device = device  # 0 small, 1 mid, 2 big
+        self.device = device  # if device == none, it will use real time as train time and set upload time as 0
+        if self.device == None:
+            logger.warn('client {} with no device init, upload time will be set as 0 and speed will be the gpu spped'.format(self.id))
+            self.upload_time = 0
+        
+        '''
+        # old implementation - every round with the same speed/upload time
         if device == 0:
             self.upload_time = np.random.normal(cfg.small_upload_time[0], cfg.small_upload_time[1])
             while self.upload_time <= 0:
@@ -52,7 +59,7 @@ class Client:
             while self.speed <= 0:
                 self.speed = np.random.normal(cfg.big_speed[0], cfg.big_speed[1])
             self.speed = int(self.speed)      
-               
+        '''
 
     def train(self, num_epochs=1, batch_size=10, minibatch=None):
         """Trains on self.model using the client's train_data.
@@ -68,14 +75,34 @@ class Client:
             update: set of weights
             update_size: number of bytes in update
         """
-        # TODO
-        # change upload time to upload spead (upload time = upload num / upload speed) 
         
         train_time_limit = self.get_train_time_limit()
         logger.debug('train_time_limit: {}'.format(train_time_limit))
         
+        def train_with_simulate_time(self, num_epochs=1, batch_size=10, minibatch=None):
+            train_speed = self.device.get_speed()
+            train_time = len(self.train_data['y'])/train_speed
+            logger.debug('clien {} train speed: {}, train time:{}'.format(self.id, train_speed, train_time))
+            if train_time > train_time_limit:
+                raise timeout_decorator.timeout_decorator.TimeoutError('timeout')
+            else :
+                if minibatch is None:
+                    data = self.train_data
+                    comp, update = self.model.train(data, num_epochs, batch_size)
+                else:
+                    frac = min(1.0, minibatch)
+                    num_data = max(1, int(frac*len(self.train_data["x"])))
+                    xs, ys = zip(*random.sample(list(zip(self.train_data["x"], self.train_data["y"])), num_data))
+                    data = {'x': xs, 'y': ys}
+
+                    # Minibatch trains for only 1 epoch - multiple local epochs don't make sense!
+                    num_epochs = 1
+                    comp, update = self.model.train(data, num_epochs, num_data)
+                num_train_samples = len(data['y'])
+                return comp, num_train_samples, update
+        
         @timeout_decorator.timeout(train_time_limit)
-        def train_inner(self, num_epochs=1, batch_size=10, minibatch=None):
+        def train_with_real_time_limit(self, num_epochs=1, batch_size=10, minibatch=None):
             if minibatch is None:
                 data = self.train_data
                 comp, update = self.model.train(data, num_epochs, batch_size)
@@ -90,8 +117,10 @@ class Client:
                 comp, update = self.model.train(data, num_epochs, num_data)
             num_train_samples = len(data['y'])
             return comp, num_train_samples, update
-        
-        return train_inner(self, num_epochs, batch_size, minibatch)
+        if self.device == None:
+            return train_with_real_time_limit(self, num_epochs, batch_size, minibatch)
+        else:
+            return train_with_simulate_time(self, num_epochs, batch_size, minibatch)
 
     def test(self, set_to_use='test'):
         """Tests self.model on self.test_data.
@@ -174,6 +203,10 @@ class Client:
         logger.debug('client {}\'s upload_time is set to {}'.format(self.id, self.upload_time))
     
     def get_train_time_limit(self):
+        if self.device != None:
+            self.upload_time = self.device.get_upload_time()
+            logger.debug('client {} upload time: {}'.format(self.id, self.upload_time))
+        
         if self.upload_time < self.deadline :
             return self.deadline - self.upload_time
         else:

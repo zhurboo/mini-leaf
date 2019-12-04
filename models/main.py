@@ -21,6 +21,7 @@ from utils.args import parse_args
 from utils.model_utils import read_data
 from utils.logging import Logger
 from utils.config import Config
+from device import Device
 
 STAT_METRICS_PATH = 'metrics/stat_metrics.csv'
 SYS_METRICS_PATH = 'metrics/sys_metrics.csv'
@@ -183,7 +184,8 @@ def online(clients):
 def create_clients(users, groups, train_data, test_data, model, cfg):
     if len(groups) == 0:
         groups = [[] for _ in users]
-    clients = [Client(u, g, train_data[u], test_data[u], model, random.randint(0, 2), cfg) for u, g in zip(users, groups)]
+    # clients = [Client(u, g, train_data[u], test_data[u], model, random.randint(0, 2), cfg) for u, g in zip(users, groups)]
+    clients = [Client(u, g, train_data[u], test_data[u], model, Device(random.randint(0, 2), cfg)) for u, g in zip(users, groups)]
     return clients
 
 
