@@ -99,10 +99,12 @@ class Client:
                     num_epochs = 1
                     comp, update = self.model.train(data, num_epochs, num_data)
                 num_train_samples = len(data['y'])
-                return comp, num_train_samples, update
+                simulate_time_c = train_time + self.upload_time
+                return simulate_time_c, comp, num_train_samples, update
         
         @timeout_decorator.timeout(train_time_limit)
         def train_with_real_time_limit(self, num_epochs=1, batch_size=10, minibatch=None):
+            start_time = time.time()
             if minibatch is None:
                 data = self.train_data
                 comp, update = self.model.train(data, num_epochs, batch_size)
@@ -116,7 +118,9 @@ class Client:
                 num_epochs = 1
                 comp, update = self.model.train(data, num_epochs, num_data)
             num_train_samples = len(data['y'])
-            return comp, num_train_samples, update
+            simulate_time_c = time.time() - start_time
+            return simulate_time_c, comp, num_train_samples, update
+        
         if self.device == None:
             return train_with_real_time_limit(self, num_epochs, batch_size, minibatch)
         else:

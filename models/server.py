@@ -65,14 +65,18 @@ class Server:
                    LOCAL_COMPUTATIONS_KEY: 0} for c in clients}
         for c in self.all_clients:
             c.model.set_params(self.model)
+        simulate_time = 0
         for c in clients:
             # c.model.set_params(self.model)
             try:
                 # set deadline 
                 c.set_deadline(deadline)
                 # training
-                logger.info('client {} starts training...'.format(c.id))
-                comp, num_samples, update = c.train(num_epochs, batch_size, minibatch)
+                logger.debug('client {} starts training...'.format(c.id))
+                simulate_time_c, comp, num_samples, update = c.train(num_epochs, batch_size, minibatch)
+                logger.debug('client {} simulate_time: {}'.format(c.id, simulate_time_c))
+                if simulate_time_c > simulate_time:
+                    simulate_time = simulate_time_c
                 sys_metrics[c.id][BYTES_READ_KEY] += c.model.size
                 sys_metrics[c.id][BYTES_WRITTEN_KEY] += c.model.size
                 sys_metrics[c.id][LOCAL_COMPUTATIONS_KEY] = comp
@@ -81,10 +85,11 @@ class Server:
                 logger.info('client {} upload successfully!'.format(c.id))
             except timeout_decorator.timeout_decorator.TimeoutError as e:
                 logger.info('client {} failed: timeout!'.format(c.id))
+                simulate_time = deadline
             except Exception as e:
                 logger.error('client {} failed: {}'.format(c.id, e))
                 traceback.print_exc()
-
+        logger.info('simulation time: {}'.format(simulate_time))
         return sys_metrics
 
     def update_model(self, update_frac):
