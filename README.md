@@ -59,7 +59,7 @@ small_speed 50 1
 git clone https://github.com/lh-ycx/leaf.git
 pip3 install -r requirements.txt
 cd leaf/data/shakespeare/
-./preprocess.sh -s niid --sf 0.01 -k 0 -t sample -tf 0.8
+./preprocess.sh -s niid --sf 0.2 -k 0 -t sample -tf 0.8
 cd ../../models/
 python3 main.py
 ```
