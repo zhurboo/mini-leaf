@@ -1,7 +1,7 @@
 import numpy as np
 import timeout_decorator
 import traceback
-from utils.logging import Logger
+from utils.logger import Logger
 
 from baseline_constants import BYTES_WRITTEN_KEY, BYTES_READ_KEY, LOCAL_COMPUTATIONS_KEY
 

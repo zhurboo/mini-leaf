@@ -4,7 +4,7 @@ import timeout_decorator
 import sys
 import numpy as np
 
-from utils.logging import Logger
+from utils.logger import Logger
 from device import Device
 
 L = Logger()

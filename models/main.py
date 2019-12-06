@@ -19,7 +19,7 @@ from model import ServerModel
 
 from utils.args import parse_args
 from utils.model_utils import read_data
-from utils.logging import Logger
+from utils.logger import Logger
 from utils.config import Config
 from device import Device
 
