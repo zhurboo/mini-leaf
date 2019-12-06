@@ -18,8 +18,9 @@ def plot_charge(file):
         data = json.load(f)
     a = list(range(len(data)))
     random.shuffle(a)
-    fig_num = 4
-    fig_size = 5
+    fig_num = 10
+    fig_size = 40
+    color = color * (fig_size // len(color) + 1)
     a = a[:fig_num * fig_size]
     for i in range(fig_num):
         plt.figure()
