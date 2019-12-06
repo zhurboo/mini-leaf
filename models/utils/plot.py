@@ -6,6 +6,7 @@ from datetime import datetime
 import time
 import os
 import pandas as pd
+from collections import defaultdict
 
 
 def plot_charge(file):
@@ -29,7 +30,7 @@ def plot_charge(file):
             message = data[str(a[i * fig_num + j])]['messages']
             for s in state:
                 message = message.replace(s, "\t" + s + "\n")
-            message = message.strip().split("\n")
+            message = message.replace('\x00', '').strip().split("\n")
             for mes in message:
                 t, s = mes.strip().split("\t")
                 t = t.strip()
@@ -52,6 +53,7 @@ def plot_charge(file):
         plt.savefig(os.path.join(img_dir, "relativeTime_clientID_{}.png".format(i+1)), format="png")
     # plt.show()
 
+
 def gen_json():
     data = pd.read_csv("../../data/user_behavior_tiny.csv", encoding="utf-8")
     data = data['extra']
@@ -62,5 +64,62 @@ def gen_json():
         json.dump(d, f, indent=4)
 
 
+def static_ready(file, google=True):
+    fmt = '%Y-%m-%d %H:%M:%S'
+    reference_time = "2018-03-06 00:00:00"
+    state = ['battery_charged_off', 'battery_charged_on', 'battery_low', 'battery_okay',
+             'phone_off', 'phone_on', 'screen_off', 'screen_on', 'screen_unlock']
+    with open(file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    ready = defaultdict(list)
+    for i in data:
+        start_charge, end_charge, okay, low = None, None, None, None
+        d = data[i]
+        message = d['messages']
+        uid = d['user_id']
+        all = []
+        for s in state:
+            message = message.replace(s, "\t" + s + "\n")
+        message = message.replace('\x00', '').strip().split("\n")
+        for mes in message:
+            t, s = mes.strip().split("\t")
+            t = t.strip()
+            s = s.strip()
+            try:
+                if s == 'battery_charged_on' and not start_charge:
+                    start_charge = time.mktime(datetime.strptime(t, fmt).timetuple()) - time.mktime(datetime.strptime(reference_time, fmt).timetuple())
+                elif s == 'battery_charged_off' and start_charge:
+                    end_charge = time.mktime(datetime.strptime(t, fmt).timetuple()) - time.mktime(datetime.strptime(reference_time, fmt).timetuple())
+                    all.append([start_charge, end_charge])
+                    start_charge, end_charge = None, None
+
+                if not google:
+                    if s == 'battery_okay' and not okay:
+                        okay = time.mktime(datetime.strptime(t, fmt).timetuple()) - time.mktime(datetime.strptime(reference_time, fmt).timetuple())
+                    elif s == 'battery_low' and okay:
+                        low = time.mktime(datetime.strptime(t, fmt).timetuple()) - time.mktime(datetime.strptime(reference_time, fmt).timetuple())
+                        all.append([okay, low])
+                        okay, low = None, None
+            except:
+                pass
+        try:
+            all = sorted(all, key=lambda x: x[0])
+            now = all[0]
+            for a in all:
+                if now[1] >= a[0]:
+                    now = [now[0], max(a[1], now[1])]
+                else:
+                    ready[uid].append(now)
+                    now = a
+        except:
+            if len(ready[uid]) == 0:
+                ready[uid] = []
+
+    with open("../../data/ready_{}.json".format("strict" if google else "loose"), "w", encoding="utf-8") as f:
+        json.dump(ready, f, indent=4)
+
+
 if __name__ == '__main__':
-    plot_charge("../../data/user_behavior_tiny.json")
+    # plot_charge("../../data/user_behavior_tiny.json")
+    static_ready("../../data/user_behavior_tiny.json", True)
+    static_ready("../../data/user_behavior_tiny.json", False)
