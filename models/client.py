@@ -3,6 +3,7 @@ import warnings
 import timeout_decorator
 import sys
 import numpy as np
+import json
 
 from utils.logger import Logger
 from device import Device
@@ -16,7 +17,10 @@ class Client:
     def __init__(self, client_id, group=None, train_data={'x' : [],'y' : []}, eval_data={'x' : [],'y' : []}, model=None, device=None):
         self._model = model
         self.id = client_id # integer
-        self.timer = Timer(uid=client_id, google=True)
+        with open('../data/user_behavior_tiny.json', 'r', encoding='utf-8') as f:
+            d = json.load(f)
+            uid = random.randint(0, len(d))
+            self.timer = Timer(uid=d[str(uid)]['user_id'], google=True)
         self.group = group
         self.train_data = train_data
         self.eval_data = eval_data
