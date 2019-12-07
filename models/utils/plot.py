@@ -120,7 +120,18 @@ def static_ready(file, google=True):
         json.dump(ready, f, indent=4)
 
 
+def uid2behavior_tiny():
+    with open('../../data/user_behavior_tiny.json', 'r', encoding='utf-8') as f:
+        d = json.load(f)
+    data = dict()
+    for value in d.values():
+        data[value['user_id']] = value
+    with open('../../data/uid2behavior_tiny.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f)
+        
+        
 if __name__ == '__main__':
     # plot_charge("../../data/user_behavior_tiny.json")
-    static_ready("../../data/user_behavior_tiny.json", True)
-    static_ready("../../data/user_behavior_tiny.json", False)
+    # static_ready("../../data/user_behavior_tiny.json", True)
+    # static_ready("../../data/user_behavior_tiny.json", False)
+    uid2behavior_tiny()
