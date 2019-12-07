@@ -33,24 +33,28 @@ class Timer:
             except:
                 pass
 
-    def ready(self, round_start, time_window):
+    def ready(self, round_start, time_window, reference=True):
         """
         if client is ready at time: round_start + time_window
         :param round_start: round start time (reference time)
         :param time_window: execute time
+        :param reference: if round_start a refer time or not
         :return: True if ready at round_start + time_window
         """
+        if not reference:
+            round_start -= self.refer_second
         now = int(round_start + time_window - self.trace_start) % (int(self.trace_end - self.trace_start)) + self.trace_start
         for item in self.ready_time:
             if item[0] <= now <= item[1]:
                 return True
         return False
 
-    def get_available_time(self, time_start, time_window):
+    def get_available_time(self, time_start, time_window, reference=True):
         """
         get available time in [time_start, time_start + time_window]
         :param time_start: t
         :param time_window:  delta t
+        :param reference: if round_start a refer time or not
         :return: time
         """
 
@@ -67,6 +71,8 @@ class Timer:
                 res += E - S
             return res
 
+        if not reference:
+            time_start -= self.refer_second
         start = int(time_start - self.trace_start) % (int(self.trace_end - self.trace_start)) + self.trace_start
         end = start + time_window
         available_time = 0
@@ -82,5 +88,4 @@ class Timer:
                 available_time += overlay(self.trace_start, end_, item[0], item[1])
                 trace_available += item[1] - item[0]
             available_time += trace_available * (end - self.trace_end) // (self.trace_end - self.trace_start)
-        
         return available_time
