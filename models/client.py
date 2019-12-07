@@ -6,6 +6,7 @@ import numpy as np
 
 from utils.logger import Logger
 from device import Device
+from timer import Timer
 
 L = Logger()
 logger = L.get_logger()
@@ -15,6 +16,7 @@ class Client:
     def __init__(self, client_id, group=None, train_data={'x' : [],'y' : []}, eval_data={'x' : [],'y' : []}, model=None, device=None):
         self._model = model
         self.id = client_id # integer
+        self.timer = Timer(uid=client_id, google=True)
         self.group = group
         self.train_data = train_data
         self.eval_data = eval_data
