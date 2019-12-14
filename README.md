@@ -2,7 +2,7 @@
 
 forked from [lh-ycx/leaf](https://github.com/lh-ycx/leaf)
 
-
+![Mini-Leaf](https://i.postimg.cc/CLDf3HFb/screenshot-19.png)
 
 - What we have done
 
