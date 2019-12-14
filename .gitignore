@@ -2,6 +2,5 @@
 data/femnist/data
 data/femnist/meta
 out.log
-.ipynb_checkpoints
 README.ipynb
 示例.ipynb
