@@ -1,6 +1,5 @@
 import sys
 import random
-import timeout_decorator
 import numpy as np
 
 class Device():
@@ -45,7 +44,7 @@ class Client:
         train_time = self.get_train_time()
         upload_time = self.get_upload_time()
         if train_time+upload_time > self.deadline:
-            raise timeout_decorator.timeout_decorator.TimeoutError('timeout')
+            return train_time+upload_time, None, None
         else:
             update = model.MA_train(self.train_data, num_epochs, batch_size)
             return train_time+upload_time, len(self.train_data['y']), update

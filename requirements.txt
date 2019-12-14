@@ -5,4 +5,3 @@ Pillow
 matplotlib
 jupyter
 pandas==0.24.2
-timeout-decorator

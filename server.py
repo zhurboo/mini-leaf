@@ -1,6 +1,4 @@
 import queue
-import traceback
-import timeout_decorator
 import numpy as np
 
 
@@ -25,18 +23,18 @@ class Server:
             c.deadline = self.deadline
         self.logger.info('selected deadline: %.2f' % self.deadline)
 
-    def MA_train_model(self, num_epochs=1, batch_size=10):
+    def MA_train_model(self, num_epochs, batch_size):
         simulate_time = 0
         for c in self.clients:
             self.model.set_params(self.params)
-            try:
-                simulate_time_c, num_samples, update = c.MA_train(self.model, num_epochs, batch_size)
+            simulate_time_c, num_samples, update = c.MA_train(self.model, num_epochs, batch_size)
+            if simulate_time_c > self.deadline:
+                simulate_time = self.deadline
+                self.logger.info('client %d, use time %.2f, failed: timeout!' % (c.id, simulate_time_c))
+            else:
                 simulate_time = max(simulate_time,simulate_time_c)
                 self.updates.append((c.id, num_samples, update))
-                self.logger.info('client {} upload successfully!'.format(c.id))
-            except timeout_decorator.timeout_decorator.TimeoutError as e:
-                self.logger.info('client {} failed: timeout!'.format(c.id))
-                simulate_time = self.deadline
+                self.logger.info('client %d, use time %.2f, upload successfully!' % (c.id, simulate_time_c))
         return simulate_time
 
     def MA_update_model(self, update_frac):
