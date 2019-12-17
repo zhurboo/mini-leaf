@@ -8,7 +8,7 @@ forked from [lh-ycx/leaf](https://github.com/lh-ycx/leaf)
 
 1. Simplify the code
 4. Use eager execution
-5. Add AGD and DC-ASGD algorithm
+5. Add ASGD and DC-ASGD algorithm
 6. Modify the model (now only supports for FEMNIST) 
 
 
