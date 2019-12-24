@@ -1,6 +1,5 @@
-*.pyc
+.*
 data/femnist/data
 data/femnist/meta
+data/femnist/clients.pkl
 out.log
-README.ipynb
-示例.ipynb

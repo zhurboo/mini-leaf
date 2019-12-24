@@ -5,9 +5,9 @@ from tensorflow.keras.layers import Input, Dense, Flatten, Conv2D, MaxPooling2D,
 from tensorflow.keras.models import Model, Sequential
 
 class ClientModel(BaseModel):
-    def __init__(self, lr, lam, num_classes):
+    def __init__(self, lr, num_classes):
         self.num_classes = num_classes
-        super(ClientModel, self).__init__(lr, lam)
+        super(ClientModel, self).__init__(lr)
 
     def create_model(self):
         inputs = Input(shape=(28, 28, 1), dtype='float64')
@@ -28,3 +28,10 @@ class ClientModel(BaseModel):
 
     def process_y(self, raw_y_batch):
         return np.array(raw_y_batch)
+    
+    def cal_loss(self, logits, labels):
+        return tf.reduce_mean(tf.losses.sparse_softmax_cross_entropy(logits=logits, labels=labels))
+    
+    def cal_acc(self, logits, labels):
+        corr_pred = tf.equal(tf.argmax(logits, axis=1), labels)
+        return tf.reduce_mean(tf.cast(corr_pred, dtype=tf.float32))

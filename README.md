@@ -1,17 +1,14 @@
-# Mini-Leaf: A mini version of Leaf
-
-forked from [lh-ycx/leaf](https://github.com/lh-ycx/leaf)
-
-![Mini-Leaf](https://i.postimg.cc/CLDf3HFb/screenshot-19.png)
-
-- What we have done
-
-1. Simplify the code
-4. Use eager execution
-5. Add ASGD and DC-ASGD algorithm
-6. Modify the model (now only supports for FEMNIST) 
+# Mini-Leaf: A Simplified Benchmark for Federated Learning 
 
 
+- What algorithm it support
+
+1. MA
+2. SSGD
+3. ASGD
+4. DC_ASGD
+
+![Mini-Leaf](https://i.postimg.cc/x1FLPzTH/screenshot-19.png)
 
 - How to use
 

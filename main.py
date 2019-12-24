@@ -1,5 +1,6 @@
 import os
-import time
+import random
+import pickle
 import importlib
 import numpy as np
 import tensorflow as tf
@@ -10,92 +11,94 @@ from utils.data import read_data
 from utils.logger import Logger
 from utils.config import Config
 
+random.seed(0)
+np.random.seed(0)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-MODEL_PARAMS = {'femnist.cnn': (0.01, 0.05, 62),
-                'sent140.stacked_lstm': (0.0003, 0.05, 25, 2, 100),
-                'shakespeare.stacked_lstm': (0.0003, 0.05, 80, 80, 256)}
+tfe.enable_eager_execution()
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+MODEL_PARAMS = {'femnist.cnn': (0.05, 62)}
 
 
-# 模型、客户端、服务器初始化
 def init(dataset, model, alg):
     logger = Logger('out').get_logger()
     cfg = Config('default.cfg', logger)
     logger.info('Algorithm: %s ' % alg)
 
-    # 模型初始化
     model_path = '%s.%s' % (dataset, model)
     logger.info('Model: %s ' % model_path)
     ClientModel = getattr(importlib.import_module('model.'+model_path),'ClientModel')
     model = ClientModel(*MODEL_PARAMS[model_path])
 
-    # 客户端初始化
-    train_data_dir = os.path.join('data', dataset, 'data', 'train')
-    test_data_dir = os.path.join('data', dataset, 'data', 'test')
-    users, train_data, test_data = read_data(train_data_dir, test_data_dir)
-    clients = [Client(logger, u, train_data[u], test_data[u], cfg) for u in users]
-    for i,client in enumerate(clients):
-        client.id = i+1
+    if os.path.exists('data/femnist/clients.pkl'):
+        with open('data/femnist/clients.pkl', 'rb') as f:
+            users, train_data, test_data = pickle.load(f)
+    else:
+        train_data_dir = os.path.join('data', dataset, 'data', 'train')
+        test_data_dir = os.path.join('data', dataset, 'data', 'test')
+        users, train_data, test_data = read_data(train_data_dir, test_data_dir)
+        with open('data/femnist/clients.pkl', 'wb') as f:
+            pickle.dump([users, dict(train_data), dict(test_data)], f)
+    clients = [Client(model, logger, i+1, train_data[u], test_data[u], cfg) for i, u in enumerate(users)]
     logger.info('Total Client num: %d' % len(clients))
-    #clients = np.random.choice(clients, cfg.num_clients, replace=False)
     clients = clients[:cfg.num_clients]
     logger.info('Clients in Used: {}'.format([c.id for c in clients]))
-
-    # 服务器初始化
-    server = Server(logger, model, clients, alg)
+    server = Server(logger, model, clients, alg, cfg)
 
     return logger, cfg, server
 
 
-# MA(Model Average)
-# 一次 Round 为完成一轮训练
-def MA_train(logger, cfg, server):
+# 一次 Round 为完成一轮训练，涉及到所有 client
+# MA: 先训练 client 本地模型，返回参数，server 参数平均
+#     client 本地模型参数: [num_epochs, batch_size]
+# SSGD: 每个 client 用本地数据求梯度，返回梯度，server 梯度平均，更新参数
+#       client 本地模型参数: [batch_size]
+def sync_train(logger, cfg, server):
     now = 0
     for i in range(cfg.num_rounds):
-        logger.info('========================= Round {} of {} ========================='.format(i+1, cfg.num_rounds))
-        logger.info('--------------------- select deadline ---------------------')
-        server.MA_set_deadline(cfg.round_ddl)
-        logger.info('-------------------------- train --------------------------')
-        now += server.MA_train_model(cfg.num_epochs, cfg.batch_size)
-        logger.info('Time: %.2f' % now)
-
-        logger.info('-------------------------- update -------------------------')
-        server.MA_update_model(cfg.update_frac)
-
+        logger.info('========================= Round {} of {} =========================='.format(i+1, cfg.num_rounds))
+        logger.info('------------------------ select deadline -------------------------')
+        server.select_deadline(cfg.round_ddl)
+        if server.alg == 'MA':
+            logger.info('-------------------------- train params --------------------------')
+            now += server.sync_get_params_or_grads()
+            logger.info('Time: %.2f' % now)
+            logger.info('-------------------------- update params -------------------------')
+            server.update_params()
+        elif server.alg == 'SSGD':
+            logger.info('---------------------------- get grads ---------------------------')
+            now += server.sync_get_params_or_grads()
+            logger.info('Time: %.2f' % now)
+            logger.info('---------------------------- apply grads -------------------------')
+            server.apply_grads()
         if i % cfg.eval_every == 0:
-            logger.info('--------------------------- test --------------------------')
-            acc, loss = server.test_model(set_to_use='train')
-            logger.info('Train_acc: %.3f  Train_loss: %.3f' % (acc, loss))
-            acc, loss = server.test_model(set_to_use='test')
-            logger.info('Test_acc: %.3f  Test_loss: %.3f' % (acc, loss))
+            logger.info('------------------------------- test -----------------------------')
+            logger.info('Train_acc: %.3f  Train_loss: %.3f' % server.test(set_to_use='train'))
+            logger.info('Test_acc: %.3f  Test_loss: %.3f' % server.test(set_to_use='test'))
 
-# ASGD(Asynchronous Stochastic Gradient Descent)
-# DC_ASGD(Asynchronous Stochastic Gradient Descent with Delay Compensation)
-# 一次 Round 为某个客户端完成一次训练
-def ASGD_train(logger, cfg, server):
+# 一次 Round 为某个 client 完成一次训练，且更新 server 参数
+# ASGD、DC_ASGD: 每轮用 client 本地数据求本地参数梯度，更新 server 参数
+#                client 本地模型参数: [batch_size]
+def async_train(logger, cfg, server):
     for i in range(cfg.num_rounds):
         logger.info('========================= Round {} of {} ========================='.format(i+1, cfg.num_rounds))
-        logger.info('-------------------------- train --------------------------')
-        now = server.ASGD_train_model()
+        logger.info('---------------------------- get grads ---------------------------')
+        now = server.async_get_grads()
         logger.info('Time: %.2f' % now)
-
-        logger.info('-------------------------- update -------------------------')
-        server.ASGD_update_model()
-
+        logger.info('---------------------------- apply grads -------------------------')
+        server.apply_grads()
         if i % cfg.eval_every == 0:
-            logger.info('--------------------------- test --------------------------')
-            acc, loss = server.test_model(set_to_use='train')
-            logger.info('Train_acc: %.3f  Train_loss: %.3f' % (acc, loss))
-            acc, loss = server.test_model(set_to_use='test')
-            logger.info('Test_acc: %.3f  Test_loss: %.3f' % (acc, loss))
+            logger.info('------------------------------- test -----------------------------')
+            logger.info('Train_acc: %.3f  Train_loss: %.3f' % server.test(set_to_use='train'))
+            logger.info('Test_acc: %.3f  Test_loss: %.3f' % server.test(set_to_use='test'))
 
 
 if __name__ == '__main__':
-    tfe.enable_eager_execution()
-    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
-
-    alg = 'MA' # ['MA','ASGD','DC_ASGD']
+    # sync: ['MA', 'SSGD']
+    # async: ['ASGD', 'DC_ASGD']
+    alg = 'ASGD'
     logger, cfg, server = init('femnist', 'cnn', alg)
-    if alg == 'MA':
-        MA_train(logger, cfg, server)
-    else:
-        ASGD_train(logger, cfg, server)
+
+    if alg in ['MA', 'SSGD']:
+        sync_train(logger, cfg, server)
+    elif alg in ['ASGD', 'DC_ASGD']:
+        async_train(logger, cfg, server)
