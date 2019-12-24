@@ -1,7 +1,7 @@
 # Mini-Leaf: A Simplified Benchmark for Federated Learning 
 
 
-- What algorithm it support
+- What algorithm it supports
 
 1. MA
 2. SSGD
