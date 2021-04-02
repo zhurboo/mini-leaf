@@ -1,6 +1,6 @@
 # Mini-Leaf: A Simplified Benchmark for Federated Learning 
 
-Forked from [Leaf](https://github.com/TalwalkarLab/leaf).
+Based on [Leaf](https://github.com/TalwalkarLab/leaf).
 
 - What algorithm it supports
 
